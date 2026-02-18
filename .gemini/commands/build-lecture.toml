@@ -1,0 +1,15 @@
+description = "Запустить полный pipeline создания лекции от литературы до финального документа"
+
+prompt = """
+Запусти полный pipeline создания лекции:
+
+1. @literature-analyst — поиск и анализ литературы
+2. @query-builder — формирование запросов по всем вопросам из @../../input/lecture_config.md
+3. @section-writer — написание каждого раздела (по одному на вопрос)
+4. @document-assembler — сборка единого документа
+5. @reviewer — методическая рецензия
+6. @editor — исправления и финальная вёрстка
+
+Входные данные: @../../input/lecture_config.md
+Финальный результат: output/lecture_final.md
+"""

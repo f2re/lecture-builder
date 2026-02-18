@@ -1,0 +1,8 @@
+description = "Поиск и анализ литературы по теме лекции"
+
+prompt = """
+Запусти @literature-analyst для поиска и анализа литературы.
+
+Входные данные: @../../input/lecture_config.md
+Результаты: output/bibliography.json, output/literature_map.md, output/key_concepts.md
+"""

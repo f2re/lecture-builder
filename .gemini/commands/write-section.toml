@@ -1,0 +1,11 @@
+description = "Написание конкретного раздела лекции"
+
+prompt = """
+Запусти @section-writer для написания раздела лекции.
+
+Входные данные:
+- Запрос: @../../output/queries/query_{{n}}.md
+- Литература: @../../output/bibliography.json
+- Глоссарий: @../../output/key_concepts.md
+Результат: output/sections/section_{{n}}.md
+"""
