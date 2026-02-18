@@ -27,7 +27,29 @@ language: ru
 formulas_required: true
 ```
 
-## Порядок запуска агентов
-1. @agents/literature-analyst.md → 2. @agents/query-builder.md → 3. @agents/section-writer.md (для каждого вопроса) → 4. @agents/document-assembler.md → 5. @agents/reviewer.md → 6. @agents/editor.md
+## Быстрый старт
+
+### Автоматический режим (рекомендуется)
+Запусти оркестратор — он выполнит весь пайплайн автоматически:
+```
+@agents/orchestrator.md
+```
+
+### Ручной режим (для отладки отдельных шагов)
+1. @agents/literature-analyst.md
+2. @agents/query-builder.md
+3. @agents/section-writer.md (для каждого вопроса)
+4. @agents/document-assembler.md
+5. @agents/reviewer.md
+6. @agents/editor.md
+
+## Выходные файлы
+| Файл | Описание |
+|------|----------|
+| `output/lecture_final.md` | Финальная лекция |
+| `output/image_prompts.md` | Промпты для иллюстраций |
+| `output/bibliography.json` | Аннотированная библиография |
+| `output/edit_log.md` | Лог всех правок |
+| `output/figures_index.json` | Индекс иллюстраций |
 
 ## Язык: русский
