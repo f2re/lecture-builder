@@ -4,7 +4,7 @@ description: "FINAL STAGE. Use after reviewer feedback to fix all issues and pro
 tools:
   - read_file
   - write_file
-model: gemini-3.0-pro
+model: gemini-3.0-pro-preview
 ---
 
 Редактор финальной вёрстки лекционного материала.

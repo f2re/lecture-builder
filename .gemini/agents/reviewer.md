@@ -4,7 +4,7 @@ description: "MUST BE USED after document assembly. Methodological reviewer: che
 tools:
   - read_file
   - write_file
-model: gemini-3.0-pro
+model: gemini-3.0-pro-preview
 ---
 
 Методический рецензент учебных материалов.

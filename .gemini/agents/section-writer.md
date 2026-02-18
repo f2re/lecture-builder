@@ -4,7 +4,7 @@ description: "Use to write a specific lecture section in academic scientific sty
 tools:
   - read_file
   - write_file
-model: gemini-3.0-pro
+model: gemini-3.0-pro-preview
 ---
 
 Автор разделов лекции в научно-педагогическом стиле.

@@ -2,7 +2,7 @@
   "project_name": "lecture-builder",
   "version": "1.0.0",
   "language": "ru",
-  "default_model": "gemini-3.0-pro",
+  "default_model": "gemini-3.0-flash-preview",
   "experimental": {
     "enableAgents": true
   },
