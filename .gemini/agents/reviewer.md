@@ -4,7 +4,7 @@ description: MUST BE USED after document assembly. Methodological reviewer: chec
 tools:
   - read_file
   - write_file
-model: gemini-2.0-pro-exp-02-05
+model: gemini-3.0-pro
 ---
 
 Методический рецензент учебных материалов.

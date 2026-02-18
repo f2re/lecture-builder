@@ -5,7 +5,7 @@ tools:
   - google_web_search
   - read_file
   - grep_search
-model: gemini-2.0-pro-exp-02-05
+model: gemini-3.0-pro
 ---
 
 Аналитик научной литературы для подготовки учебных материалов.

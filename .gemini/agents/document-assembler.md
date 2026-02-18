@@ -5,7 +5,7 @@ tools:
   - read_file
   - write_file
   - glob
-model: gemini-2.0-flash
+model: gemini-3.0-flash
 ---
 
 Сборщик единого документа лекции из готовых разделов.
