@@ -5,7 +5,7 @@ tools:
   - read_file
   - write_file
   - glob
-model: gemini-3.0-pro-preview
+model: gemini-3-pro-preview
 ---
 
 Специалист по формированию развёрнутых запросов для агентов-авторов.
