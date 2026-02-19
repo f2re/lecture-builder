@@ -11,3 +11,4 @@ model: gemini-3-pro-preview
 Автор разделов лекции в научно-педагогическом стиле.
 
 @../workflows/section-writer.md
+@../skills/formula-numbering.md
