@@ -6,7 +6,7 @@ tools:
   - write_file
   - glob
   - grep_search
-model: gemini-2.5-pro-preview-05-06
+model: gemini-3-pro-preview
 ---
 
 Специалист по формированию развёрнутых запросов для агентов-авторов.

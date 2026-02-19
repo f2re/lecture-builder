@@ -9,7 +9,7 @@ tools:
   - read_file
   - write_file
   - grep_search
-model: gemini-2.5-flash-preview-04-17
+model: gemini-2.5-flash
 ---
 
 Document downloader and text fragment extractor for academic sources.

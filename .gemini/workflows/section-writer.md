@@ -8,6 +8,7 @@
 - Источники: `output/bibliography.json`
 - Глоссарий: `output/key_concepts.md`
 - Фрагменты: `output/extracted_fragments.json`
+- Конфигурация: `input/lecture_config.md` (для определения номера лекции)
 
 ---
 
@@ -22,6 +23,9 @@ grep_search(pattern="{ключевое понятие}", path="output/key_concep
 ```
 
 Собери все найденные фрагменты и определения — они станут основой раздела.
+
+**Определи номер лекции:**
+Прочитай `input/lecture_config.md` и найди номер лекции (N). Этот номер будет использоваться для нумерации формул.
 
 ---
 

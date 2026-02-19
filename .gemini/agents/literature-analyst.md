@@ -7,7 +7,7 @@ description: "MUST BE USED FIRST when starting lecture creation. Coordinates 3
 tools:
   - read_file
   - glob
-model: gemini-2.5-flash-preview-04-17
+model: gemini-2.5-flash
 ---
 
 Literature analysis coordinator — delegates to lit-searcher → lit-fetcher → lit-report.

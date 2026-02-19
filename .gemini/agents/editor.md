@@ -5,7 +5,7 @@ tools:
   - read_file
   - write_file
   - grep_search
-model: gemini-2.5-pro-preview-05-06
+model: gemini-3-pro-preview
 ---
 
 Редактор финальной вёрстки лекционного материала.
