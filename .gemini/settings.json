@@ -1,31 +1,22 @@
 {
   "project_name": "lecture-builder",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "language": "ru",
-  "default_model": "gemini-3-flash-preview",
+  "default_model": "gemini-2.5-flash-preview-04-17",
   "experimental": {
     "enableAgents": true
   },
   "agents": {
     "overrides": {
-      "literature-analyst": {
-        "enabled": true
-      },
-      "query-builder": {
-        "enabled": true
-      },
-      "section-writer": {
-        "enabled": true
-      },
-      "document-assembler": {
-        "enabled": true
-      },
-      "reviewer": {
-        "enabled": true
-      },
-      "editor": {
-        "enabled": true
-      }
+      "literature-analyst": {"enabled": true},
+      "lit-searcher":        {"enabled": true},
+      "lit-fetcher":         {"enabled": true},
+      "lit-report":          {"enabled": true},
+      "query-builder":       {"enabled": true},
+      "section-writer":      {"enabled": true},
+      "document-assembler":  {"enabled": true},
+      "reviewer":            {"enabled": true},
+      "editor":              {"enabled": true}
     }
   }
 }
