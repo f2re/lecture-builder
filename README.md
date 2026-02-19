@@ -1,101 +1,111 @@
-# Lecture Builder
+# 🎓 Lecture Builder: Многоагентная система генерации лекций
 
-Universal multi-agent system for automated creation of academic lecture materials
-using Gemini CLI.
+Универсальная система на базе **Gemini CLI** для автоматизированного создания лекционных материалов вузовского уровня, полностью соответствующих стандартам **ФГОС 3++**.
 
-## 🚀 Features
-- **3-stage literature pipeline** — search (Flash), fetch (Flash), synthesis (Pro), optimised for speed and cost.
-- **Pedagogical design** — FGOS 3++-compliant query expansion and competency mapping.
-- **Multi-agent architecture** — specialised roles for search, writing, review, and assembly.
-- **LaTeX support** — correct formatting of mathematical and technical formulas.
-- **GOST citations** — automatic bibliography formatting per GOST R 7.0.5-2008.
+---
 
-## 🛠 Installation
-1. Install [Gemini CLI](https://github.com/google/gemini-cli).
-2. Clone this repository.
-3. Fill in `input/lecture_config.md`.
+## 🚀 Основные возможности
 
-## 📖 Usage
+*   **⚡ 3-этапный поиск литературы** — интеллектуальный поиск (Flash), извлечение релевантных фрагментов (Flash) и экспертный синтез (Pro).
+*   **📐 Педагогический дизайн** — автоматическое сопоставление с компетенциями ФГОС 3++, декомпозиция вопросов и построение логики изложения.
+*   **🤖 Специализированные ИИ-агенты** — каждый агент имеет свою роль: поиск, написание, рецензирование или верстка.
+*   **🔢 Поддержка LaTeX** — автоматическое и корректное оформление математических формул и технических данных.
+*   **📚 Библиография по ГОСТ** — формирование списка литературы и постраничных ссылок по **ГОСТ Р 7.0.5-2008**.
+*   **🎨 Иллюстрации** — генерация промптов для создания научных схем и инфографики (DALL-E, Midjourney, NotebookLM).
 
+---
+
+## 🏃 Быстрый старт
+
+### 1. Подготовка
+Установите [Gemini CLI](https://github.com/google/gemini-cli) и клонируйте репозиторий.
+
+### 2. Конфигурация
+Заполните `input/lecture_config.md`. Это «сердце» вашей лекции.
+*   Укажите **тему**, **дисциплину** и **компетенции** (ОПК, ПК).
+*   Сформулируйте **учебные вопросы** (обычно 3-4).
+*   Добавьте **ключевые формулы**, если они обязательны.
+
+### 3. Запуск
 ```bash
-gemini build-lecture        # Full pipeline
-gemini search-literature    # Literature analysis only (3-stage)
-gemini review-lecture       # Review an existing draft
+# Полный цикл создания лекции «под ключ»
+gemini build-lecture
 ```
-
-### Available commands
-- `/agents list` — verify all agents are available
-- `gemini build-lecture` — full pipeline: literature → queries → writing → review → edit
-- `gemini search-literature` — 3-stage literature sub-pipeline only
-- `gemini review-lecture` — methodological review of an existing draft
 
 ---
 
-## 🏗 Architecture
+## 📖 Подробное использование
 
-### Full pipeline
-```
-literature-analyst (coordinator, Flash)
-  ├── lit-searcher  [Flash] → output/lit/search_results.json
-  ├── lit-fetcher   [Flash] → output/lit/extracted_fragments.json
-  └── lit-report    [Pro]  → output/bibliography.json
-                              output/literature_map.md
-                              output/key_concepts.md
-query-builder       [Flash] → output/queries/query_{N}.md
-section-writer ×N   [Pro]  → output/sections/section_{N}_*.md
-document-assembler  [Flash] → output/lecture_draft.md
-reviewer            [Pro]  → output/review_report.md
-editor              [Pro]  → output/lecture_final.md
-```
+Система поддерживает как полную автоматизацию, так и запуск отдельных этапов для гибкой настройки.
 
-### Literature sub-pipeline (v2)
+### Сценарии работы
 
-| Agent | Model | Responsibility |
-|---|---|---|
-| `lit-searcher` | gemini-2.5-flash | Build search matrix (RU+EN), run `google_web_search`, index local files |
-| `lit-fetcher`  | gemini-2.5-flash | Fetch top-15 URLs via `web_fetch`, extract relevant text fragments |
-| `lit-report`   | gemini-2.5-pro   | Score sources (FGOS), build bibliography, synthesise glossary |
-
-**Why 3 agents?** Search and fetch are I/O-bound — Flash is 5–10× faster and cheaper.
-Pro reasoning is needed only for the final synthesis step.
-
-### Shared skills (`.gemini/skills/`)
-- `search-patterns.md` — query templates for CyberLeninka, elibrary, arXiv, etc.
-- `gost-citation.md` — GOST R 7.0.5-2008 citation format rules
-- `fgos-standards.md` — FGOS 3++ competency framework
+| Команда | Когда использовать | Что делает |
+| :--- | :--- | :--- |
+| `gemini build-lecture` | Нужно создать лекцию с нуля | Запускает весь пайплайн от поиска до верстки |
+| `gemini search-literature` | Нужно только собрать литературу | Поиск, анализ источников, создание библиографии и глоссария |
+| `gemini write-section --n=1` | Нужно переписать один раздел | Генерирует текст только для вопроса №1 |
+| `gemini review-lecture` | Есть готовый текст, нужна критика | Проводит методическую экспертизу черновика |
 
 ---
 
-## 📁 Project structure
-```
-.gemini/
-  agents/
-    literature-analyst.md   # coordinator → calls lit-searcher, lit-fetcher, lit-report
-    lit-searcher.md         # [Flash] web search + local file index
-    lit-fetcher.md          # [Flash] URL fetching + fragment extraction
-    lit-report.md           # [Pro]   scoring + bibliography + glossary
-    query-builder.md
-    section-writer.md
-    document-assembler.md
-    reviewer.md
-    editor.md
-  workflows/                # step-by-step instructions per agent
-  commands/                 # CLI shortcuts (build-lecture, search-literature, …)
-  skills/                   # shared reusable knowledge
-input/
-  lecture_config.md         # ← fill this first
-  literature/               # optional: local PDFs / textbooks
-output/
-  lit/                      # intermediate stage files
-  bibliography.json
-  literature_map.md
-  key_concepts.md
-  lecture_final.md
-  …
+## 📂 Работа с источниками
+
+### Поиск в интернете
+Агент `lit-searcher` автоматически ищет материалы в:
+*   **CyberLeninka / eLibrary** (научные статьи на русском)
+*   **arXiv / Google Scholar** (англоязычные источники)
+*   **RSHU / вузовские репозитории** (учебные пособия)
+
+### Локальные источники 📚
+Если у вас есть специфические PDF-файлы или учебники, просто положите их в папку `input/literature/`.
+Агенты проиндексируют их и будут использовать цитаты из ваших файлов наравне с найденными в сети.
+
+---
+
+## 🏗 Структура выходных данных
+
+После завершения `gemini build-lecture` в папке `output/` вы найдете:
+
+1.  **`lecture_final.md`** — Итоговый текст лекции:
+    *   Титульный лист и цели (Знать/Уметь/Владеть).
+    *   Разделы с формулами, примерами и выводами.
+    *   Контрольные вопросы для студентов.
+2.  **`image_prompts.md`** — Пакет промптов для генерации иллюстраций.
+3.  **`bibliography.json`** — База всех найденных источников с оценкой их релевантности.
+4.  **`review_report.md`** — Отчет рецензента с анализом качества материала.
+
+---
+
+## 📝 Пример структуры лекции
+
+Программа генерирует текст в формате Markdown, который легко конвертировать в PDF или Word:
+
+```markdown
+# ЛЕКЦИЯ 4. Основы барической топографии
+
+## Учебные цели
+- **Знать:** Физический смысл изобарических поверхностей...
+- **Уметь:** Рассчитывать геопотенциальную высоту...
+
+---
+## Вопрос 1. Физические основы АТ
+Текст раздела с формулами:
+\[ ΔH = \frac{R T_{ср}}{g} \ln \frac{p_1}{p_2} \]
+[Иванов, 2022, с. 45]
+
+> 📊 **Рисунок 4.1.** Схема распределения геопотенциала
+> `[image_1_diagram]`
 ```
 
-## 🤖 Models
-| Task | Model |
-|---|---|
-| Literature search, fetch, query expansion, document assembly | `gemini-2.5-flash` |
-| Bibliography synthesis, section writing, review, editing | `gemini-2.5-pro` |
+---
+
+## 🤖 Используемые модели
+
+| Агент | Модель | Задача |
+| :--- | :--- | :--- |
+| `lit-searcher`, `lit-fetcher` | **Gemini 2.5 Flash** | Скоростной поиск и обработка сотен страниц |
+| `section-writer`, `reviewer` | **Gemini 2.5 Pro** | Написание глубоких текстов и логический анализ |
+
+---
+*Система разработана для преподавателей и методистов, ценящих время и качество контента.*
