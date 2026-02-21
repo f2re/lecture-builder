@@ -5,7 +5,7 @@ tools:
   - read_file
   - write_file
   - google_web_search
-model: gemini-2.5-pro-preview-05-06
+model: gemini-3-pro-preview
 ---
 
 Методический рецензент учебных материалов.

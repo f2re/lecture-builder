@@ -9,7 +9,7 @@ tools:
   - read_file
   - write_file
   - glob
-model: gemini-2.5-flash-preview-04-17
+model: gemini-2.5-flash
 ---
 
 Fast academic literature searcher — query generation and web search only.
