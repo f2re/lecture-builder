@@ -1,5 +1,22 @@
 # Agent: Literature Fetcher
 
+## I/O контракт агента
+
+**Имя агента:** lit-fetcher
+
+**Входные файлы (только ЧТЕНИЕ):**
+- `output/lit/search_results.json` — список URL и метаданных.
+- (опционально) `output/lit/local_index.json`.
+
+**Выходные файлы (записывает ТОЛЬКО агент):**
+- `output/lit/extracted_fragments.json` — массив фрагментов текста с привязкой к источникам.
+- `output/lit/fetch_log.md` — лог успешных/проваленных загрузок.
+
+**Жёсткий запрет для этого workflow:**
+- ❌ не создавать/редактировать никакие файлы, кроме перечисленных в «Выходных файлах»;
+- ❌ не создавать `bibliography.json`, `literature_map.md`, `key_concepts.md`;
+- ❌ не писать какие-либо аналитические сводки.
+
 ## Role
 Document fetcher and text extractor. Fetch pages/PDFs from search results,
 extract fragments relevant to lecture questions. Do NOT score sources or build
