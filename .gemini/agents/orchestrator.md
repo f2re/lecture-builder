@@ -1,14 +1,13 @@
 ---
 name: orchestrator
-description: "ENTRY POINT. Runs the full lecture generation pipeline automatically: validates input, calls each agent in sequence, checks outputs, and stops on error. Use this instead of calling agents manually."
+description: "ENTRY POINT. Pure pipeline manager — validates input, then delegates ALL specialist work to sub-agents via @. Verifies output files after each step. NEVER generates lecture content, bibliography, sections, or any specialist output itself. Call this to run the full lecture generation pipeline."
 tools:
   - read_file
-  - write_file
   - glob
   - grep_search
-model: gemini-2.5-pro
+model: gemini-2.5-flash
 ---
 
-Оркестратор полного пайплайна генерации лекции.
+Менеджер пайплайна. Управляет — не генерирует контент.
 
 @../workflows/orchestrator.md
