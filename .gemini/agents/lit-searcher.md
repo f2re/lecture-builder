@@ -1,9 +1,11 @@
 ---
 name: lit-searcher
-description: "Fast search sub-agent. Reads lecture_config.md, builds a search matrix
-  (4–5 queries per question in RU+EN), runs google_web_search across CyberLeninka /
-  elibrary / RSHU / arXiv, and indexes local literature files. Output:
-  output/lit/search_results.json + output/lit/local_index.json. Uses Flash for speed."
+description: >
+  Search sub-agent. Priority: (1) index local files in input/literature/ and write
+  local_index.json IMMEDIATELY; (2) run limited web search — max 4 questions,
+  max 2 queries per question, max 8 results per query; (3) write search_results.json
+  AFTER EVERY question, not at the end. ALWAYS produces valid JSON even if web search
+  fails or times out. Never analyzes or synthesizes content.
 tools:
   - google_web_search
   - read_file
@@ -12,6 +14,6 @@ tools:
 model: gemini-2.5-flash
 ---
 
-Fast academic literature searcher — query generation and web search only.
+Литературный поисковик: сначала локальные файлы, потом ограниченный веб-поиск.
 
 @../workflows/lit-searcher.md
