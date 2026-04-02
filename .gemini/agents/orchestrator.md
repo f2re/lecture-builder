@@ -5,7 +5,7 @@ tools:
   - read_file
   - glob
   - grep_search
-model: gemini-2.5-flash
+model: gemini-3-flash-preview
 ---
 
 Менеджер пайплайна. Управляет — не генерирует контент.

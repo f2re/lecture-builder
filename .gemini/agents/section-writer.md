@@ -5,7 +5,7 @@ tools:
   - read_file
   - write_file
   - grep_search
-model: gemini-3-pro-preview
+model: gemini-2.5-pro
 ---
 
 Автор разделов лекции в научно-педагогическом стиле.

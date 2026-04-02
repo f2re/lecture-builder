@@ -11,7 +11,7 @@ tools:
   - read_file
   - write_file
   - glob
-model: gemini-2.5-flash
+model: gemini-3-flash-preview
 ---
 
 Литературный поисковик: сначала локальные файлы, потом ограниченный веб-поиск.
