@@ -1,0 +1,4 @@
+pypandoc
+python-docx
+lxml
+pandoc

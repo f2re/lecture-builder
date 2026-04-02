@@ -286,6 +286,34 @@ glob("output/figures_index.json")  → существует?
 
 ---
 
+## ШАГ 7. Генерация DOCX (ГОСТ)
+
+### 🔴 ВЫПОЛНИТЬ ЧЕРЕЗ СКРИПТ АВТОМАТИЗАЦИИ
+
+**Предварительная проверка:**
+```
+glob("output/lecture_final.md") → файл существует?
+```
+
+**Выполни команду:**
+`run_shell_command("bash scripts/md2docx/run_md2docx.sh output/lecture_final.md -o output/lecture_final.docx")`
+
+**Верификация:**
+```
+glob("output/lecture_final.docx") → файл существует?
+```
+
+**При ошибке — ПРЕДУПРЕЖДЕНИЕ:**
+```
+⚠️ ВНИМАНИЕ: Не удалось сгенерировать DOCX-файл.
+Причина: [ошибка из stderr]
+Лекция в формате Markdown (output/lecture_final.md) доступна.
+```
+
+**Статус:** `✅ Шаг 7 завершён — создан output/lecture_final.docx`
+
+---
+
 ## Итоговый отчёт
 
 По завершении всего пайплайна выведи сводку:
@@ -302,7 +330,8 @@ glob("output/figures_index.json")  → существует?
 ║  Замечаний рецензента устранено: {N}         ║
 ╠══════════════════════════════════════════════╣
 ║  Выходные файлы:                             ║
-║  📄 output/lecture_final.md   — финал        ║
+║  📄 output/lecture_final.docx — ГОСТ DOCX    ║
+║  📝 output/lecture_final.md   — Markdown      ║
 ║  🎨 output/image_prompts.md   — промпты       ║
 ║  📋 output/edit_log.md        — лог правок   ║
 ║  📚 output/bibliography.json  — библиография ║
