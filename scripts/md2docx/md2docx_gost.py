@@ -128,12 +128,25 @@ def preprocess(src: Path) -> str:
     # \[ ... \] → $$ ... $$ (display math)
     text = re.sub(r'\\\[\s*(.*?)\s*\\\]', r'$$\1$$', text, flags=re.DOTALL)
     
-    # Удаляем \tag{...} из формул, так как pandoc (mathml) их не понимает
-    text = re.sub(r'\\tag\{.*?\}', '', text)
+    # Обработка \tag{...} — выносим за скобки $$, чтобы не ломать парсер Pandoc
+    # и при этом сохранить нумерацию в тексте.
+    text = re.sub(r'\$\$\s*(.*?)\\tag\{(.*?)\}\s*\$\$', r'$$\1$$ (\2)', text, flags=re.DOTALL)
+    text = re.sub(r'\\tag\{(.*?)\}', r'(\1)', text)
     
-    # Кавычки-елочки: заменяем прямые кавычки на типографские
-    text = re.sub(r'(^|[\s\(\[«])"', r'\1«', text)
-    text = re.sub(r'"', r'»', text)
+    # Замена кавычек (только вне формул)
+    def quote_replacer(match):
+        content = match.group(0)
+        if content.startswith('$'): # Не трогаем формулы
+            return content
+        # Заменяем кавычки в обычном тексте
+        content = re.sub(r'(^|[\s\(\[«])"', r'\1«', content)
+        content = re.sub(r'"', r'»', content)
+        return content
+
+    # Разделяем текст на части: формулы и всё остальное
+    parts = re.split(r'(\$\$.*?\$\$|\$.*?\$)', text, flags=re.DOTALL)
+    text = "".join([quote_replacer(re.match('.*', p, re.DOTALL)) if i % 2 == 0 else p 
+                    for i, p in enumerate(parts)])
     
     text = re.sub(r'\$\$\s*\$\$', '', text)  # пустые блоки
     return text
@@ -173,7 +186,6 @@ def convert(md_text: str, ref: Path, out: Path, toc: bool):
         pandoc_bin, tmp,
         '-f', 'markdown+tex_math_dollars+tex_math_double_backslash',
         '-t', 'docx',
-        '--mathml',                      # ← LaTeX → нативные уравнения Word
         f'--reference-doc={ref}',
         '--wrap=none',
         '--standalone',
