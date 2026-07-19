@@ -1,15 +1,11 @@
 ---
 name: literature-analyst
-description: "MUST BE USED FIRST when starting lecture creation. Coordinates 3
-  sub-agents: lit-searcher (query generation + web search), lit-fetcher (URL fetching
-  + fragment extraction), lit-report (scoring + bibliography + glossary). Produces
-  output/bibliography.json, output/literature_map.md, output/key_concepts.md."
+description: Coordinate the complete evidence-first literature pipeline by delegating search, extraction and evidence curation.
 tools:
   - read_file
   - glob
-model: gemini-3-flash-preview
+  - grep_search
+model: gemini-2.5-flash
 ---
 
-Literature analysis coordinator — delegates to lit-searcher → lit-fetcher → lit-report.
-
-@../workflows/literature-analyst.md
+Read `@../../AGENTS.md` and `@../../.agents/workflows/research-literature.md`. Delegate in order to `lit-searcher`, `lit-fetcher` and `lit-report`. Do not perform their specialist work yourself. Verify every required research artifact and its schema before reporting completion.

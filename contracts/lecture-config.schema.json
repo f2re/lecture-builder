@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/f2re/lecture-builder/contracts/lecture-config.schema.json",
+  "title": "Lecture Builder configuration",
+  "type": "object",
+  "required": [
+    "topic",
+    "discipline",
+    "specialty",
+    "course",
+    "lecture_number",
+    "hours",
+    "fgos_version",
+    "competencies",
+    "audience_level",
+    "questions",
+    "language",
+    "formulas_required"
+  ],
+  "properties": {
+    "topic": {
+      "type": "string",
+      "minLength": 3
+    },
+    "discipline": {
+      "type": "string",
+      "minLength": 2
+    },
+    "specialty": {
+      "type": "string",
+      "minLength": 2
+    },
+    "course": {
+      "type": "string",
+      "minLength": 2
+    },
+    "lecture_number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "hours": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 12
+    },
+    "fgos_version": {
+      "type": "string",
+      "minLength": 2
+    },
+    "fgos_code": {
+      "type": "string"
+    },
+    "competencies": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 5
+      }
+    },
+    "audience_level": {
+      "type": "string",
+      "minLength": 3
+    },
+    "prior_disciplines": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 2
+      }
+    },
+    "questions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^\\s*\\d+[.)]\\s+.+"
+      }
+    },
+    "language": {
+      "type": "string",
+      "enum": [
+        "ru",
+        "en"
+      ]
+    },
+    "formulas_required": {
+      "type": "boolean"
+    },
+    "key_formulas": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 3
+      }
+    },
+    "key_terms": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 2
+      }
+    },
+    "research": {
+      "type": "object",
+      "properties": {
+        "cover_all_questions": {
+          "type": "boolean"
+        },
+        "languages": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 2
+          }
+        },
+        "max_queries_per_question": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "max_results_per_query": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "max_sources_to_extract": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "minimum_sources_per_question": {
+          "type": "object",
+          "properties": {
+            "textbooks": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "peer_reviewed": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "normative": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "quality": {
+      "type": "object",
+      "properties": {
+        "word_budget_per_hour": {
+          "type": "integer",
+          "minimum": 1500,
+          "maximum": 6000
+        },
+        "section_words": {
+          "type": "object",
+          "required": [
+            "min",
+            "max"
+          ],
+          "properties": {
+            "min": {
+              "type": "integer",
+              "minimum": 300
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 500
+            }
+          },
+          "additionalProperties": false
+        },
+        "require_evidence_for_claims": {
+          "type": "boolean"
+        },
+        "require_fact_check_after_edit": {
+          "type": "boolean"
+        },
+        "max_review_cycles": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

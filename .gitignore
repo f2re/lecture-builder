@@ -1,5 +1,22 @@
 node_modules/
 .DS_Store
 .env
+.env.*
 *.log
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
 scripts/md2docx/venv/
+scripts/md2docx/gost_reference.docx
+
+# Generated lecture artifacts are local by default.
+output/*
+!output/.gitkeep

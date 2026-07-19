@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/f2re/lecture-builder/contracts/section-brief.schema.json",
+  "title": "Section authoring brief",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "section_id",
+    "number",
+    "title",
+    "purpose",
+    "bridge_in",
+    "bridge_out",
+    "required_claim_ids",
+    "allowed_source_ids",
+    "required_evidence_ids",
+    "structure",
+    "word_budget",
+    "output_file"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "3.0"
+    },
+    "section_id": {
+      "type": "string",
+      "pattern": "^q\\d+$"
+    },
+    "number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 10
+    },
+    "bridge_in": {
+      "type": "string",
+      "minLength": 10
+    },
+    "bridge_out": {
+      "type": "string",
+      "minLength": 10
+    },
+    "required_claim_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "allowed_source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "required_evidence_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "required_terms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "formula_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^eq:"
+      },
+      "uniqueItems": true
+    },
+    "examples": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "misconceptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "structure": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "string"
+      }
+    },
+    "word_budget": {
+      "type": "object",
+      "required": [
+        "min",
+        "target",
+        "max"
+      ],
+      "properties": {
+        "min": {
+          "type": "integer",
+          "minimum": 300
+        },
+        "target": {
+          "type": "integer",
+          "minimum": 300
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 300
+        }
+      },
+      "additionalProperties": false
+    },
+    "output_file": {
+      "type": "string",
+      "pattern": "^output/sections/section_\\d+_[a-z0-9-]+\\.md$"
+    }
+  },
+  "additionalProperties": true
+}

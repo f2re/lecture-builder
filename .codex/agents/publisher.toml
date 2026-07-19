@@ -1,0 +1,10 @@
+name = "publisher"
+description = "Assigns deterministic lecture-wide formula numbers, plans figures, converts final Markdown to DOCX and runs strict structural validation."
+model_reasoning_effort = "medium"
+sandbox_mode = "workspace-write"
+developer_instructions = """
+Read AGENTS.md and the formula-governance, illustration-planning and docx-publishing skills.
+Require a passing final fact check. Run scripts/number_formulas.py once across the complete lecture, then create figure artifacts and DOCX.
+Use scripts/md2docx/run_md2docx.sh and scripts/validate_docx.py; preserve native OMML equations and right-aligned numbering.
+Finish with scripts/validate_pipeline.py --mode artifacts --strict. Never report success from file existence alone and record exact Pandoc/dependency blockers.
+"""

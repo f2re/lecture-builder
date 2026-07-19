@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/f2re/lecture-builder/contracts/source-record.schema.json",
+  "title": "Source record",
+  "type": "object",
+  "required": [
+    "source_id",
+    "title",
+    "source_type",
+    "metadata_status",
+    "provenance"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string",
+      "pattern": "^(?:ref|src)_[A-Za-z0-9_.-]+$"
+    },
+    "id": {
+      "type": "string"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "local",
+        "web_downloaded",
+        "web_metadata",
+        "normative",
+        "dataset",
+        "unknown"
+      ]
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "textbook",
+        "monograph",
+        "article",
+        "normative",
+        "dataset",
+        "web_resource",
+        "thesis",
+        "unknown"
+      ]
+    },
+    "authors": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "title": {
+      "type": "string",
+      "minLength": 2
+    },
+    "year": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1400,
+      "maximum": 2200
+    },
+    "publisher": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "journal": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "volume_issue": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pages_total": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "page_ranges": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "verified_pages": {
+      "type": "boolean"
+    },
+    "url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "doi": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "access_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "local_file": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "content_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(?:sha256:)?[a-f0-9]{64}$"
+    },
+    "metadata_status": {
+      "type": "string",
+      "enum": [
+        "verified",
+        "partial",
+        "unverified"
+      ]
+    },
+    "relevance_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "uniqueItems": true
+    },
+    "annotation": {
+      "type": "string"
+    },
+    "citation_gost": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "method"
+      ],
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "publisher_page",
+            "doi_registry",
+            "repository_metadata",
+            "document_metadata",
+            "filename_inference",
+            "manual",
+            "web_search",
+            "unknown"
+          ]
+        },
+        "retrieved_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "verified_fields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

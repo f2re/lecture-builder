@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/f2re/lecture-builder/contracts/formula-registry.schema.json",
+  "title": "Lecture-wide formula registry",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "lecture_number",
+    "formulas"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "3.0"
+    },
+    "lecture_number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "formulas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "formula_id",
+          "number",
+          "expression",
+          "ordinal"
+        ],
+        "properties": {
+          "formula_id": {
+            "type": "string",
+            "pattern": "^eq:[A-Za-z0-9_.:-]+$"
+          },
+          "number": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+$"
+          },
+          "expression": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ordinal": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

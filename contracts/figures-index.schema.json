@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/f2re/lecture-builder/contracts/figures-index.schema.json",
+  "title": "Lecture figure index",
+  "type": "object",
+  "required": ["schema_version", "lecture_number", "total_figures", "figures"],
+  "properties": {
+    "schema_version": {"const": "3.0"},
+    "lecture_number": {"type": "integer", "minimum": 1},
+    "total_figures": {"type": "integer", "minimum": 0},
+    "figures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["figure_id", "number", "title", "type", "section", "purpose", "status"],
+        "properties": {
+          "figure_id": {"type": "string", "pattern": "^fig:[A-Za-z0-9_.:-]+$"},
+          "number": {"type": "string", "pattern": "^\\d+\\.\\d+$"},
+          "title": {"type": "string", "minLength": 3},
+          "type": {"type": "string", "enum": ["diagram", "chart", "map", "comparison", "timeline", "concept-map", "scientific-illustration"]},
+          "section": {"type": "string"},
+          "purpose": {"type": "string", "minLength": 5},
+          "status": {"type": "string", "enum": ["planned", "generated", "verified", "omitted"]},
+          "data_source_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "placeholder": {"type": "string"},
+          "asset_path": {"type": ["string", "null"]}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

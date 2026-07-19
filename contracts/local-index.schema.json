@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/f2re/lecture-builder/contracts/local-index.schema.json",
+  "title": "Local literature index",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["source_id", "file", "media_type", "content_hash", "extractability", "metadata_status"],
+    "properties": {
+      "source_id": {"type": "string", "pattern": "^src_[A-Za-z0-9_.-]+$"},
+      "file": {"type": "string", "minLength": 1},
+      "media_type": {"type": "string", "minLength": 1},
+      "content_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+      "extractability": {"type": "string", "enum": ["page_aware", "structured", "text_only", "ocr_required", "unavailable"]},
+      "title": {"type": ["string", "null"]},
+      "authors": {"type": "array", "items": {"type": "string"}},
+      "year": {"type": ["integer", "null"], "minimum": 1400, "maximum": 2200},
+      "metadata_status": {"type": "string", "enum": ["verified", "partial", "unverified"]},
+      "provenance": {"type": "object"}
+    },
+    "additionalProperties": true
+  }
+}

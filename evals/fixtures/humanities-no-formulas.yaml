@@ -1,0 +1,15 @@
+topic: "Методы исторического источниковедения"
+discipline: "История"
+specialty: "46.03.01 История"
+course: "2 курс, 3 семестр"
+lecture_number: 5
+hours: 2
+fgos_version: "ФГОС 3++"
+competencies:
+  - "ОПК-2: анализировать исторические источники"
+audience_level: "бакалавры 2 курса"
+questions:
+  - "1. Понятие и классификация исторического источника"
+  - "2. Внешняя и внутренняя критика источника"
+language: ru
+formulas_required: false
