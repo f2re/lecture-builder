@@ -1,51 +1,52 @@
 # Lecture Builder — cross-platform agent policy
 
-This repository generates Russian university lecture materials through a verified multi-agent pipeline. The canonical cross-platform instructions are under `.agents/`; Antigravity, Codex and the Gemini compatibility layer consume the same rules, skills and artifact contracts.
+Lecture Builder generates Russian university lectures through one verified multi-agent pipeline. Canonical instructions live in `.agents/`; Antigravity, Codex and the Gemini compatibility layer consume the same rules, Skills, workflows and contracts.
 
 ## Instruction precedence
 
 1. System and user instructions.
-2. The nearest applicable `AGENTS.md`.
+2. Nearest applicable `AGENTS.md`.
 3. `.agents/rules/*.md`.
-4. The selected `.agents/workflows/*.md`.
-5. The selected `.agents/skills/*/SKILL.md`.
+4. Selected `.agents/workflows/*.md`.
+5. Selected `.agents/skills/*/SKILL.md`.
 6. Platform adapters under `.codex/` or `.gemini/`.
 7. User-facing documentation.
 
-When instructions conflict, follow the higher level and report the conflict. Scientific methodology must not be duplicated in platform adapters.
+Scientific/methodical behavior must not be duplicated in platform adapters.
 
 ## Non-negotiable invariants
 
-- Never invent authors, titles, years, publishers, DOI values, URLs, quotations, pages, source classifications or experimental data.
+- Never invent source metadata, quotations, page numbers, observations, graph values or experimental data.
 - Unknown metadata is `null` or explicitly unverified.
-- Every substantive scientific claim must resolve through `output/evidence_ledger.json` to exact source evidence and be traceable in Markdown through `<!-- claim:claim_id -->`.
-- Page citations are allowed only for page-aware verified extraction.
-- `input/` is user-owned. Do not overwrite or delete it without an explicit request for that exact change.
-- Generated artifacts belong in `output/`; prompts, rules, contracts, scripts and tests do not.
-- Validate JSON against `contracts/` and use deterministic scripts before declaring a stage complete.
-- File existence does not prove freshness. Use `output/run_manifest.json` and content hashes.
-- The orchestrator coordinates; specialists search, extract, curate, design, write, review, edit and publish.
+- Every substantive scientific claim resolves through `output/evidence_ledger.json` and is marked in Markdown with `<!-- claim:claim_id -->`.
+- Page citations require page-aware verified extraction.
+- `input/` is user-owned; generated artifacts belong under `output/`.
+- Validate JSON against `contracts/`; a file's existence does not prove freshness or correctness.
+- Use the existing manifest content hashes only. Do not add prompt-version or model-version tracking.
+- The pipeline verifies theory against sources and the local corpus. It does not reproduce or replicate scientific experiments.
+- The orchestrator coordinates; specialists search, extract, curate, design, write, enrich, visualize, review, edit and publish.
 - Parallel workers may write only disjoint files.
-- Any unsupported claim, unresolved citation, duplicate/unresolved equation label, critical review finding or failed DOCX check blocks publication.
+- Unsupported claims, invalid numbering, misleading methodical inserts, invented graph data, unresolved formula/figure references, critical review findings or DOCX failures block publication.
 
 ## Canonical pipeline
 
 1. Validate `input/lecture_config.md`.
-2. Discover sources for every configured question.
+2. Search web and local literature for every question.
 3. Extract exact fragments with provenance and locations.
-4. Build verified bibliography, claim inventory and evidence ledger.
-5. Design one coherent lecture blueprint and one section brief per question.
+4. Build bibliography, claim inventory, evidence ledger, literature map and glossary.
+5. Design one numbered blueprint and one numbered brief per question.
 6. Write one evidence-backed section per brief.
-7. Assemble and coherence-edit the draft without adding facts.
-8. Run independent scientific and pedagogical reviews.
-9. Apply reviewed corrections in a separate final version.
-10. Run an independent final fact check.
-11. Assign lecture-wide equation numbers once.
-12. Plan illustrations without inventing data.
-13. Convert to DOCX and inspect native equation structure.
-14. Run the strict quality gate and update the manifest.
+7. Normalize question/subsection headings.
+8. Run methodical enrichment and visual/graph planning in parallel.
+9. Render validated graph assets deterministically.
+10. Assemble one coherent draft with typed inserts, figure captions and placeholders.
+11. Run independent scientific and pedagogical reviews.
+12. Apply corrections to a separate final version.
+13. Run independent source-based fact check.
+14. Assign lecture-wide formula numbers once.
+15. Convert to DOCX and run strict validation.
 
-## Required stage artifacts
+## Required artifacts
 
 ```text
 output/lit/local_index.json
@@ -61,6 +62,10 @@ output/lecture_blueprint.json
 output/lecture_blueprint.md
 output/section_briefs/section_N.json
 output/sections/section_N_slug.md
+output/methodical_inserts.json
+output/figures_index.json
+output/chart_specs.json
+output/image_prompts.md
 output/lecture_draft.md
 output/reviews/scientific.json
 output/reviews/pedagogical.json
@@ -68,64 +73,54 @@ output/reviews/resolution.json
 output/reviews/fact_check.json
 output/review_report.md
 output/lecture_final.md
+output/edit_log.md
 output/formula_registry.json
-output/image_prompts.md
-output/figures_index.json
 output/lecture_final.docx
 output/quality_report.json
 output/run_manifest.json
 ```
 
+## Numbering contract
+
+`lecture_number` is the single numbering root. For lecture 17:
+
+- question headings: `## 17.1. ...`, `## 17.2. ...`;
+- subsection headings: `### 17.1.1. ...`, `### 17.1.2. ...`;
+- optional deeper headings: `#### 17.1.1.1. ...`;
+- formula numbers: `(17.1)`, `(17.2)`, `(17.3)` globally;
+- figure numbers: `Рисунок 17.1`, `Рисунок 17.2` globally;
+- table numbers: `Таблица 17.1`, `Таблица 17.2` globally.
+
+Question, formula, figure and table counters are separate namespaces. Technical file names retain local ordinals such as `section_1_...`.
+
 ## Lecture quality contract
 
-A lecture is one argument, not a concatenation of essays. Each section must connect to an established result, state a local question, define new terms, explain meaning, introduce formalism after motivation, state assumptions and limits, apply the model in an example, address a likely misconception, derive a micro-conclusion and create a content-specific bridge to the next question.
+A lecture is one argument, not a stack of essays. Each question connects to prior knowledge, states a problem, defines terms, explains theory, introduces formalism after motivation, states limits, applies the model, corrects a misconception, derives a micro-conclusion and creates a specific bridge.
 
-Use one main idea per paragraph. Do not use a concept before its prerequisite. Do not repeat definitions or generic transitions. Distinguish fact, interpretation, assumption, approximation, pedagogical simplification and worked example. Conclusions do not introduce new facts.
+Methodical callouts are restrained student-facing inserts: key idea, mnemonic, thematic example, formula reading, common error, self-check, comparison, professional context or visual cue. They are visibly typed but unnumbered, so they do not compete with the scientific hierarchy. Factual inserts require evidence; hypothetical values are labeled.
 
-## Citation and evidence syntax
-
-Use stable citations:
-
-```text
-[@src_001]
-[@src_001, с. 45]
-```
-
-The second form requires verified page coordinates. Do not use unresolved author–year strings as the canonical representation.
-
-## Formula syntax
-
-Authors use stable labels and references, not final numbers:
-
-```latex
-$$
-\Delta H = \frac{R\overline{T_v}}{g_0}\ln\frac{p_1}{p_2}
-\label{eq:hypsometric}
-$$
-
-Из соотношения @eq:hypsometric следует ...
-```
-
-After final fact check, run the deterministic lecture-wide numbering pass. Do not restart equation counters per section and do not manually edit generated `\tag{lecture.counter}` values.
+Graphs use source-bound deterministic specifications with axes and units, or are explicitly schematic. Image-generation prompts remain in the separate `output/image_prompts.md` file.
 
 ## Role boundaries
 
 - `orchestrator`: manifest, dependencies, delegation and status only.
-- `literature-searcher`: discovery/indexing only.
+- `literature-searcher`: discovery/local indexing only.
 - `source-extractor`: exact extraction and provenance only.
 - `evidence-curator`: bibliography, claims and evidence only.
-- `lecture-architect`: blueprint and briefs only.
+- `lecture-architect`: blueprint/briefs and numbering plan only.
 - `section-writer`: exactly one section file.
+- `methodical-enhancer`: methodical insert JSON only.
+- `visualization-planner`: figure index, chart specs, separate image prompts and declared deterministic chart assets only.
 - `coherence-editor`: assembled draft only; no new claims.
-- reviewers/fact-checker: read-only with machine-readable findings.
+- reviewers/fact-checker: read-only machine-readable findings.
 - `final-editor`: final Markdown and resolution log; no self-approval.
-- `publisher`: numbering, illustrations, DOCX and strict validation.
+- `publisher`: deterministic numbering, DOCX and strict validation.
 
 ## Parallelism
 
-Safe: independent search queries, different source extraction jobs, disjoint section files after a frozen blueprint, and the two independent reviews.
+Safe: independent search/extraction, disjoint section files, methodical versus visual planning, and independent reviews.
 
-Sequential: manifest updates, blueprint finalization, assembly, final editing, fact check, equation numbering and publication.
+Sequential: manifest writes, blueprint finalization, structure normalization, chart rendering, assembly, editing, fact check, formula numbering and publication.
 
 ## Commands
 
@@ -133,13 +128,13 @@ Sequential: manifest updates, blueprint finalization, assembly, final editing, f
 python -m pip install -e '.[dev]'
 python scripts/validate_pipeline.py --mode source
 pytest
-python scripts/number_formulas.py output/lecture_final.md \
-  -o output/lecture_final.md --registry output/formula_registry.json
-bash scripts/md2docx/run_md2docx.sh output/lecture_final.md \
-  -o output/lecture_final.docx
+python scripts/number_structure.py output/lecture_final.md -o output/lecture_final.md
+python scripts/validate_numbering.py output/lecture_final.md
+python scripts/render_charts.py --spec output/chart_specs.json --figures output/figures_index.json
+python scripts/number_formulas.py output/lecture_final.md -o output/lecture_final.md --registry output/formula_registry.json
+bash scripts/md2docx/run_md2docx.sh output/lecture_final.md -o output/lecture_final.docx
 python scripts/validate_docx.py output/lecture_final.docx --expect-formulas
-python scripts/validate_pipeline.py --mode artifacts --strict \
-  --report output/quality_report.json
+python scripts/validate_pipeline.py --mode artifacts --strict --report output/quality_report.json
 ```
 
-If network, browser, document extraction, model access or Pandoc is unavailable, report the exact blocker. Never represent a skipped check as passed.
+Report unavailable network, model, extraction or Pandoc capabilities exactly; never represent a skipped check as passed.

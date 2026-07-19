@@ -88,10 +88,23 @@ def validate_project(root: str | Path) -> ValidationResult:
         "AGENTS.md",
         "README.md",
         ".codex/config.toml",
+        ".codex/agents/methodical-enhancer.toml",
+        ".codex/agents/visualization-planner.toml",
         ".agents/rules/00-project-core.md",
+        ".agents/rules/40-document-numbering.md",
+        ".agents/rules/50-methodical-visual-quality.md",
         ".agents/workflows/build-lecture.md",
+        ".agents/workflows/enrich-lecture.md",
+        ".agents/workflows/plan-visuals.md",
+        ".agents/skills/document-numbering/SKILL.md",
+        ".agents/skills/methodical-enrichment/SKILL.md",
+        "contracts/methodical-inserts.schema.json",
+        "contracts/chart-specs.schema.json",
         "scripts/validate_pipeline.py",
+        "scripts/number_structure.py",
+        "scripts/validate_numbering.py",
         "scripts/number_formulas.py",
+        "scripts/render_charts.py",
         "scripts/md2docx/md2docx_gost.py",
     ]
     for relative in required_files:
@@ -110,20 +123,20 @@ def validate_project(root: str | Path) -> ValidationResult:
     skill_names: dict[str, Path] = {}
     for path in sorted((base / ".agents/skills").glob("*/SKILL.md")):
         _validate_skill(path, result, skill_names)
-    if len(skill_names) < 10:
+    if len(skill_names) < 17:
         result.add(
             "project.skill_count",
-            "Ожидается не менее 10 специализированных skills",
+            "Ожидается не менее 17 специализированных skills",
             path=base / ".agents/skills",
         )
 
     codex_names: dict[str, Path] = {}
     for path in sorted((base / ".codex/agents").glob("*.toml")):
         _validate_codex_agent(path, result, codex_names)
-    if len(codex_names) < 8:
+    if len(codex_names) < 14:
         result.add(
             "project.codex_agent_count",
-            "Ожидается не менее 8 специализированных Codex agents",
+            "Ожидается не менее 14 специализированных Codex agents",
             path=base / ".codex/agents",
         )
 
@@ -140,10 +153,15 @@ def validate_project(root: str | Path) -> ValidationResult:
             details={"files": [str(path) for path in legacy_profiles]},
         )
 
-    for path in sorted((base / "contracts").glob("*.schema.json")):
+    schema_paths = sorted((base / "contracts").glob("*.schema.json"))
+    for path in schema_paths:
         result.extend(validate_schema_file(path))
-    if not list((base / "contracts").glob("*.schema.json")):
-        result.add("project.schemas_missing", "JSON Schemas отсутствуют", path=base / "contracts")
+    if len(schema_paths) < 16:
+        result.add(
+            "project.schemas_missing",
+            "Ожидается не менее 16 JSON Schema, включая methodical inserts и chart specs",
+            path=base / "contracts",
+        )
 
     config_path = base / ".codex/config.toml"
     if config_path.is_file():
@@ -164,19 +182,27 @@ def validate_project(root: str | Path) -> ValidationResult:
     if settings_path.is_file():
         try:
             settings = load_json(settings_path)
-            if str(settings.get("version", "")).startswith("2."):
+            if not str(settings.get("version", "")).startswith("3."):
                 result.add(
                     "project.gemini_version",
                     "Gemini compatibility adapter должен иметь версию 3.x",
                     path=settings_path,
                 )
+            overrides = ((settings.get("agents") or {}).get("overrides") or {})
+            for name in ("methodical-enhancer", "visualization-planner"):
+                if not isinstance(overrides.get(name), dict) or overrides[name].get("enabled") is not True:
+                    result.add(
+                        "project.gemini_agent",
+                        f"Gemini adapter должен включать агента {name}",
+                        path=settings_path,
+                    )
         except ValueError as exc:
             result.add("project.gemini_settings", str(exc), path=settings_path)
 
     result.metrics = {
         "skills": len(skill_names),
         "codex_agents": len(codex_names),
-        "schemas": len(list((base / "contracts").glob("*.schema.json"))),
+        "schemas": len(schema_paths),
         "rules": len(list((base / ".agents/rules").glob("*.md"))),
         "workflows": len(list((base / ".agents/workflows").glob("*.md"))),
     }

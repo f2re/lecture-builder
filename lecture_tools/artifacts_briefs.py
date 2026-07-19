@@ -6,6 +6,7 @@ from typing import Any
 from .artifact_common import _claim_map, _evidence_map
 from .citations import normalize_bibliography
 from .models import ValidationResult
+from .numbering import question_number, subsection_number
 
 
 def validate_section_briefs(
@@ -27,6 +28,7 @@ def validate_section_briefs(
     except ValueError:
         source_ids = set()
 
+    lecture_number = int(config.get("lecture_number") or 0)
     expected = len(config.get("questions") or [])
     seen_numbers: set[int] = set()
     output_files: set[str] = set()
@@ -45,6 +47,13 @@ def validate_section_briefs(
         if number in seen_numbers:
             result.add("brief.duplicate_number", f"Повторный brief для раздела {number}", path=path)
         seen_numbers.add(number)
+        expected_display = question_number(lecture_number, number)
+        if brief.get("display_number") != expected_display:
+            result.add(
+                "brief.display_number",
+                f"Brief {number} должен иметь display_number={expected_display}",
+                path=path,
+            )
         output_file = str(brief.get("output_file") or "")
         if output_file in output_files:
             result.add("brief.duplicate_output", f"Повторный output_file {output_file}", path=path)
@@ -79,6 +88,35 @@ def validate_section_briefs(
                     "required_claim_ids не совпадают с blueprint",
                     path=path,
                     details={"brief": sorted(required_claims), "blueprint": sorted(blueprint_claims)},
+                )
+            if brief.get("subsections") != blueprint_section.get("subsections"):
+                result.add(
+                    "brief.blueprint_subsections",
+                    "Подразделы brief должны совпадать с blueprint",
+                    path=path,
+                )
+            if set(brief.get("methodical_requirements") or []) != set(blueprint_section.get("methodical_requirements") or []):
+                result.add(
+                    "brief.blueprint_methodical",
+                    "methodical_requirements brief должны совпадать с blueprint",
+                    path=path,
+                )
+            if brief.get("visual_opportunities") != blueprint_section.get("visual_opportunities"):
+                result.add(
+                    "brief.blueprint_visuals",
+                    "visual_opportunities brief должны совпадать с blueprint",
+                    path=path,
+                )
+
+        subsections = brief.get("subsections") or []
+        for sub_index, subsection in enumerate(subsections, start=1):
+            expected_sub = subsection_number(lecture_number, number, sub_index)
+            if not isinstance(subsection, dict) or subsection.get("number") != expected_sub:
+                result.add(
+                    "brief.subsection_number",
+                    f"Ожидался номер подраздела {expected_sub}",
+                    path=path,
+                    location=f"subsections/{sub_index - 1}",
                 )
 
         budget = brief.get("word_budget") or {}

@@ -1,22 +1,13 @@
-# Machine-readable artifact contracts
+# Artifact contracts
 
-All generated JSON must be UTF-8 JSON, validate against the matching Draft 2020-12 schema, and use stable cross-file identifiers.
+JSON Schema under this directory define every machine-readable pipeline artifact. Source validation compiles all schemas; artifact validation checks instances and cross-file references.
 
-| Schema | Artifact |
-|---|---|
-| `lecture-config` | `input/lecture_config.md` parsed as YAML |
-| `local-index` | `output/lit/local_index.json` |
-| `search-results` | `output/lit/search_results.json` |
-| `extracted-fragments` | `output/lit/extracted_fragments.json` |
-| `source-record` | normalized individual source records |
-| `bibliography` | `output/bibliography.json` |
-| `evidence-ledger` | `output/evidence_ledger.json` |
-| `lecture-blueprint` | `output/lecture_blueprint.json` |
-| `section-brief` | `output/section_briefs/section_N.json` |
-| `review-report` | scientific, pedagogical and fact-check reports |
-| `review-resolution` | `output/reviews/resolution.json` |
-| `formula-registry` | `output/formula_registry.json` |
-| `figures-index` | `output/figures_index.json` |
-| `run-manifest` | `output/run_manifest.json` |
+Core contracts cover config, local/search/extraction source data, bibliography, evidence ledger, numbered lecture blueprint, section briefs, reviews, formulas, figures, manifest and publication artifacts.
 
-Schemas establish shape; Python validators enforce cross-file relationships, freshness, evidence support, review resolution, equation sequence and DOCX structure.
+Methodical and visual extensions:
+
+- `methodical-inserts.schema.json` — typed examples, mnemonics, formula-reading aids, common errors and self-checks;
+- `chart-specs.schema.json` — source-bound or explicitly schematic graph specifications;
+- `figures-index.schema.json` — global `lecture_number.ordinal` numbering, captions, alt text and links to prompts/chart specs.
+
+Question/subsection display numbers derive from `lecture_number`; formulas, figures and tables use separate global counters with the same lecture prefix.

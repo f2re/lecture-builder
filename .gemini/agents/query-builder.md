@@ -1,11 +1,7 @@
 ---
 name: query-builder
-description: Design a coherent lecture blueprint and one evidence-backed section brief per configured question.
-tools:
-  - read_file
-  - write_file
-  - grep_search
+description: Build the numbered lecture blueprint and section briefs.
+tools: [read_file, write_file, grep_search]
 model: gemini-2.5-pro
 ---
-
-Read `@../../AGENTS.md`, `@../../.agents/skills/lecture-architecture/SKILL.md` and `@../../.agents/skills/fgos-competencies/SKILL.md`. Produce blueprint and briefs before compatibility `query_N.md` files. Do not write lecture sections.
+Read `@../../AGENTS.md`, `@../../.agents/skills/lecture-architecture/SKILL.md`, `@../../.agents/skills/document-numbering/SKILL.md` and `@../../.agents/skills/fgos-competencies/SKILL.md`. Create L.Q/L.Q.S architecture, methodical requirements and visual opportunities; do not write lecture prose.

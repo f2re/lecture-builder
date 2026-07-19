@@ -9,9 +9,10 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_project_source_is_structurally_valid() -> None:
     result = validate_project(ROOT)
     assert result.ok, result.to_dict()
-    assert result.metrics["skills"] >= 15
-    assert result.metrics["codex_agents"] >= 12
-    assert result.metrics["schemas"] >= 10
+    assert result.metrics["skills"] >= 17
+    assert result.metrics["codex_agents"] >= 14
+    assert result.metrics["schemas"] >= 16
+    assert result.metrics["rules"] >= 6
 
 
 def test_repository_config_is_valid() -> None:

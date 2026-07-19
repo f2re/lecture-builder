@@ -1,11 +1,11 @@
 name = "section_writer"
-description = "Writes one evidence-backed Russian university lecture section from one validated brief, using stable citations and formula labels."
+description = "Writes one evidence-backed numbered lecture question from one validated brief, with theory, formulas and a core example."
 model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"
 developer_instructions = """
-Read AGENTS.md and .agents/skills/section-authoring/SKILL.md; also use formula-governance and gost-citation when applicable.
-Identify exactly one section number and write exactly one output/sections/section_N_slug.md. Do not modify any other generated artifact.
-Follow the brief's concept order, claims, examples, misconception, word budget and incoming/outgoing bridges.
-Use [@source_id] citations and stable equation labels with @eq references; never assign final equation numbers.
-Verify evidence coverage, definitions, assumptions, units, example, micro-conclusion and readability before completion.
+Read AGENTS.md and the section-authoring, document-numbering, formula-governance and citation Skills.
+Write exactly one output/sections/section_N_slug.md.
+Use the brief's L.Q question heading and L.Q.S subsection headings, claims, concepts, formula labels, example, misconception and bridges.
+Do not add methodical callout boxes, image prompts, chart specs, other sections or final formula numbers.
+Verify evidence, definitions, units, assumptions, canonical headings and readability.
 """

@@ -9,10 +9,21 @@ competencies:
   - "ОПК-5: проектировать вычислительные системы"
 audience_level: "бакалавры 4 курса"
 questions:
-  - "1. Модели отказов"
-  - "2. Репликация состояния"
-  - "3. Консенсус и кворумы"
-  - "4. Идемпотентность операций"
-  - "5. Наблюдаемость и восстановление"
+  - "8.1. Модели отказов"
+  - "8.2. Репликация состояния"
+  - "8.3. Консенсус и кворумы"
+  - "8.4. Идемпотентность операций"
+  - "8.5. Наблюдаемость и восстановление"
 language: ru
 formulas_required: true
+methodical:
+  enabled: true
+  min_inserts_per_section: 4
+  max_inserts_per_section: 5
+  required_functions: [understand, remember, apply, self_check]
+  max_word_share: 0.12
+visuals:
+  require_graphs: true
+  require_image_prompts: true
+  max_figures_per_section: 3
+  chart_output_format: svg

@@ -1,3 +1,1 @@
-# Compatibility workflow: orchestrator
-
-The canonical workflow is `@../../.agents/workflows/build-lecture.md` and the canonical role contract is `@../../.agents/skills/lecture-orchestration/SKILL.md`. Follow them without adding Gemini-specific scientific rules.
+Canonical workflow: read root `AGENTS.md` and the matching Skills in `.agents/skills/`. The Gemini adapter must follow shared numbering, evidence, methodical and visual contracts without duplicating them.

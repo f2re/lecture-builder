@@ -32,6 +32,9 @@ formulas_required: false
     )
     migrated, changes = migrate(old)
     assert migrated["lecture_number"] == 7
+    assert migrated["questions"] == ["7.1. Question"]
     assert migrated["research"]["cover_all_questions"] is True
+    assert migrated["methodical"]["enabled"] is True
+    assert migrated["visuals"]["require_image_prompts"] is True
     assert migrated["quality"]["require_fact_check_after_edit"] is True
-    assert len(changes) == 3
+    assert len(changes) == 6

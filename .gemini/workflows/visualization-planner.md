@@ -1,0 +1,1 @@
+Canonical workflow: read root `AGENTS.md`, `.agents/workflows/plan-visuals.md`, `.agents/skills/illustration-planning/SKILL.md` and `.agents/skills/document-numbering/SKILL.md`. Produce figure/chart/prompt artifacts, render declared chart assets deterministically and never edit lecture prose or invent data.

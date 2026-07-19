@@ -1,7 +1,7 @@
 # Codex custom agents
 
-These TOML profiles adapt the platform-independent rules, workflows and skills in `.agents/` to Codex. Scientific and pedagogical behavior belongs in shared Skills; TOML files contain only role boundaries, sandbox policy and orchestration-specific instructions.
+TOML profiles adapt the canonical `.agents/` layer to Codex. Select the narrowest role. Read-only reviewers never edit artifacts; writing roles obey the matching Skill output boundary.
 
-Root `AGENTS.md` is mandatory. Select the narrowest profile for the task. Read-only reviewers must not edit artifacts. Writing profiles must respect the output boundaries defined by the matching Skill.
+Safe parallelism: independent search/extraction, disjoint section files, `methodical_enhancer` versus `visualization_planner`, and the two reviews. Manifest writes, structure normalization, assembly, editing, fact check, formula numbering and publication remain sequential.
 
-The orchestrator may parallelize independent search/extraction work, disjoint section files, and the two read-only reviews. Manifest updates, assembly, editing, formula numbering and publication remain sequential.
+The lecture pipeline verifies content against sources and local literature. It does not reproduce scientific experiments and does not add prompt/model-version tracking to the manifest.

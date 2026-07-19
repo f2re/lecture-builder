@@ -6,9 +6,9 @@ from typing import Any
 
 from .io import load_yaml
 from .models import ValidationResult
+from .numbering import parse_config_question, question_number
 from .schemas import load_schema, validate_instance
 
-QUESTION_NUMBER_RE = re.compile(r"^\s*(\d+)[.)]\s+")
 LECTURE_NUMBER_RE = re.compile(r"(?:лекция|lecture)\s*№?\s*(\d+)", re.IGNORECASE)
 COMPETENCY_RE = re.compile(r"\b(?:ОК|ОПК|ПК|УК)-\d+(?:\.\d+)?\b", re.IGNORECASE)
 
@@ -42,31 +42,47 @@ def validate_config(path: str | Path, root: str | Path) -> ValidationResult:
         )
     )
 
+    lecture_number = int(config.get("lecture_number") or 0)
     questions = config.get("questions") or []
-    parsed_numbers: list[int] = []
     for index, question in enumerate(questions, start=1):
-        match = QUESTION_NUMBER_RE.match(str(question))
-        if not match:
+        descriptor = parse_config_question(str(question), index)
+        if descriptor is None:
             result.add(
                 "config.question_number",
-                f"Вопрос {index} должен начинаться с номера вида '{index}.'",
+                f"Вопрос {index} должен начинаться с номера вида '{lecture_number}.{index}.'",
                 path=source,
                 location=f"questions/{index - 1}",
             )
             continue
-        parsed_numbers.append(int(match.group(1)))
+        if descriptor.legacy:
+            result.add(
+                "config.question_legacy_numbering",
+                f"Используется устаревший номер '{descriptor.explicit_question}.'; канонический номер — {question_number(lecture_number, index)}.",
+                severity="warning",
+                path=source,
+                location=f"questions/{index - 1}",
+            )
+            if descriptor.explicit_question != index:
+                result.add(
+                    "config.question_sequence",
+                    f"Ожидался порядковый номер {index}, получено {descriptor.explicit_question}",
+                    path=source,
+                    location=f"questions/{index - 1}",
+                )
+            continue
+        if descriptor.lecture_prefix != lecture_number or descriptor.explicit_question != index:
+            result.add(
+                "config.question_sequence",
+                (
+                    f"Вопрос {index} должен иметь номер {question_number(lecture_number, index)}, "
+                    f"получено {descriptor.lecture_prefix}.{descriptor.explicit_question}"
+                ),
+                path=source,
+                location=f"questions/{index - 1}",
+            )
 
-    expected = list(range(1, len(questions) + 1))
-    if parsed_numbers and parsed_numbers != expected:
-        result.add(
-            "config.question_sequence",
-            f"Нумерация вопросов должна быть последовательной: ожидалось {expected}, получено {parsed_numbers}",
-            path=source,
-        )
-
-    lecture_number = config.get("lecture_number")
     course_match = LECTURE_NUMBER_RE.search(str(config.get("course", "")))
-    if course_match and lecture_number is not None and int(course_match.group(1)) != lecture_number:
+    if course_match and lecture_number and int(course_match.group(1)) != lecture_number:
         result.add(
             "config.lecture_number_mismatch",
             "Поле lecture_number не совпадает с номером лекции в поле course",
@@ -97,10 +113,21 @@ def validate_config(path: str | Path, root: str | Path) -> ValidationResult:
             path=source,
         )
 
+    methodical = config.get("methodical") or {}
+    minimum = int(methodical.get("min_inserts_per_section") or 0)
+    maximum = int(methodical.get("max_inserts_per_section") or 0)
+    if methodical.get("enabled") and (minimum <= 0 or maximum < minimum):
+        result.add(
+            "config.methodical_limits",
+            "Для methodical.enabled требуется 1 <= min_inserts_per_section <= max_inserts_per_section",
+            path=source,
+        )
+
     result.metrics = {
         "questions": len(questions),
         "competencies": len(competencies),
         "lecture_number": lecture_number,
         "hours": config.get("hours"),
+        "methodical_enabled": methodical.get("enabled") is True,
     }
     return result

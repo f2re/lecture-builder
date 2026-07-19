@@ -1,38 +1,44 @@
-# Lecture Builder 3.0
+# Lecture Builder 3.1
 
-Lecture Builder — многоагентная система подготовки русскоязычных лекций вузовского уровня. Версия 3.0 использует единое платформонезависимое ядро для Antigravity, Codex и совместимого режима Gemini, а качество результата контролируется не только промптами, но и JSON Schema, evidence ledger, хеш-манифестом, Python-валидаторами и DOCX smoke-тестами.
+Lecture Builder — многоагентная система подготовки русскоязычных лекций вузовского уровня для Antigravity, Codex и совместимого режима Gemini. Канонические правила находятся в `.agents/`, а качество контролируют evidence ledger, локальная база источников, JSON Schema, детерминированная нумерация, независимые рецензии, fact check и DOCX-проверки.
 
-## Что изменилось в версии 3.0
+## Что формирует система
 
-- Канонические правила, workflows и Skills перенесены в `.agents/`.
-- Antigravity использует `.agents/rules/`, `.agents/workflows/` и `.agents/skills/` напрямую.
-- Codex использует настоящие TOML-профили в `.codex/agents/`, а не Markdown-обёртки над Gemini.
-- Gemini сохранён как compatibility adapter; научная методология больше не дублируется в `.gemini/`.
-- Поиск охватывает каждый вопрос лекции, а лимиты задаются конфигурацией.
-- Источники, фрагменты, тезисы и ссылки связаны через `evidence_ledger.json`.
-- Неизвестные авторы, годы, DOI и страницы не восстанавливаются «по смыслу».
-- Перед написанием разделов создаётся общий `lecture_blueprint` с графом понятий и логическими связками.
-- Формулы получают стабильные метки при написании и сквозные номера только после сборки всей лекции.
-- Научная и педагогическая рецензии выполняются независимо; после редактирования проводится отдельный fact check.
-- DOCX проверяется на нативные OMML-формулы, номера справа, поля, шрифт и колонтитул.
-- Возобновление работы опирается на хеши входов и выходов, а не на наличие файлов.
+Готовая лекция включает:
+
+- логически связанную теорию и определения;
+- формулы с расшифровкой символов, единицами и сквозной нумерацией;
+- тематические примеры, мнемоники, предупреждения об ошибках и самопроверку;
+- графики, схемы, карты и подписи, согласованные с источниками;
+- отдельный `output/image_prompts.md` для генерации научных иллюстраций;
+- `output/chart_specs.json` для детерминированных графиков без выдуманных данных;
+- библиографию, evidence ledger и локальную базу литературы для сверки;
+- независимую научную и педагогическую рецензию;
+- финальный source-based fact check;
+- Markdown и ГОСТ-ориентированный DOCX.
+
+Система проверяет теорию по источникам и локальному корпусу, но не воспроизводит научные эксперименты: экспериментальная репликация не входит в задачу генерации лекции.
 
 ## Архитектура
 
 ```text
 config
-  → literature search
-  → source extraction
-  → evidence curation
-  → lecture architecture
+  → literature search + local source index
+  → exact source extraction
+  → bibliography + evidence ledger
+  → numbered lecture blueprint + section briefs
   → section writers × N
+  → deterministic structure numbering
+  ├─→ methodical enhancer
+  └─→ visualization planner
+       → figures index + chart specs + separate image prompts
+       → deterministic chart rendering
   → coherence assembly
-  → scientific review ┐
-  → pedagogical review ┘
+  ├─→ scientific review
+  └─→ pedagogical review
   → final editing
   → independent fact check
   → lecture-wide formula numbering
-  → illustration planning
   → DOCX publishing
   → strict quality gate
 ```
@@ -40,23 +46,85 @@ config
 Основные каталоги:
 
 ```text
-.agents/rules/       постоянные инварианты проекта
-.agents/workflows/   команды полного и частичного pipeline
-.agents/skills/      общие знания и методы для всех платформ
+.agents/rules/       постоянные инварианты
+.agents/workflows/   команды Antigravity
+.agents/skills/      общие Skills всех платформ
 .codex/agents/       Codex custom agents в TOML
 .gemini/             compatibility adapter
-contracts/           JSON Schema всех машинных артефактов
+contracts/           JSON Schema
 lecture_tools/       детерминированные проверки
-scripts/             CLI, нумерация формул и DOCX
-input/               пользовательская конфигурация и литература
+scripts/             CLI и DOCX
+input/               конфигурация и локальная литература
 output/              генерируемые материалы
 ```
 
-Подробная схема приведена в `docs/ARCHITECTURE.md`.
+## Нумерация от номера лекции
+
+`lecture_number` задаётся в `input/lecture_config.md`. Для лекции 17:
+
+```yaml
+lecture_number: 17
+questions:
+  - "17.1. Первый учебный вопрос"
+  - "17.2. Второй учебный вопрос"
+```
+
+В готовом документе:
+
+```text
+Вопросы:      17.1, 17.2, 17.3
+Подразделы:   17.1.1, 17.1.2; 17.2.1, 17.2.2
+Формулы:      (17.1), (17.2), (17.3) — сквозной счётчик
+Рисунки:      Рисунок 17.1, Рисунок 17.2 — сквозной счётчик
+Таблицы:      Таблица 17.1, Таблица 17.2 — сквозной счётчик
+```
+
+Это отдельные пространства нумерации: номер `17.1` может одновременно обозначать первый вопрос, первую формулу и первый рисунок. Технические пути сохраняют локальный номер: `section_1_...`.
+
+Нормализация и проверка:
+
+```bash
+python scripts/number_structure.py output/lecture_final.md -o output/lecture_final.md
+python scripts/validate_numbering.py output/lecture_final.md
+```
+
+## Методические вставки
+
+Новый `methodical-enhancer` анализирует все готовые разделы и создаёт `output/methodical_inserts.json`. Он не переписывает научный текст, а проектирует короткие вставки:
+
+```markdown
+> **Ключевая идея.** ...
+
+> **Мнемоника.** ...
+
+> **Тематический пример к вопросу 17.1.** ...
+
+> **Как читать формулу.** ...
+
+> **Типичная ошибка.** ...
+
+> **Проверка понимания.** ...
+```
+
+Вставки распределяются по функциям `understand`, `remember`, `apply`, `self_check` и `transfer`, ограничиваются по плотности и проходят научную, педагогическую и финальную проверку. Фактические вставки связаны с claim/evidence; условные численные ситуации помечаются как иллюстративные.
+
+## Графики и изображения
+
+`visualization-planner` создаёт:
+
+- `output/figures_index.json` — рисунки с номерами, подписями и alt text;
+- `output/chart_specs.json` — оси, единицы, источники данных и преобразования для графиков;
+- `output/image_prompts.md` — отдельные tool-neutral промпты для схем, карт и научных иллюстраций.
+
+Наблюдательные кривые и карты нельзя поручать генеративной модели без данных. График либо строится детерминированно из cited/local dataset, либо явно отмечается как схематический и не являющийся наблюдательными данными. Построение выполняется командой:
+
+```bash
+python scripts/render_charts.py --spec output/chart_specs.json --figures output/figures_index.json
+```
+
+Скрипт синхронизирует статусы и пути в обоих JSON-файлах, сохраняет asset/data hashes и создаёт PNG/SVG под `output/figures/`.
 
 ## Быстрый старт
-
-### 1. Установка проверок
 
 ```bash
 git clone https://github.com/f2re/lecture-builder.git
@@ -66,81 +134,53 @@ python scripts/validate_pipeline.py --mode source
 pytest
 ```
 
-Для DOCX требуется Pandoc. Обёртка `scripts/md2docx/run_md2docx.sh` создаёт локальное virtual environment для Python-зависимостей.
+Заполните `input/lecture_config.md`; полный шаблон находится в `input/lecture_config.example.md`.
 
-### 2. Конфигурация
-
-Заполните `input/lecture_config.md`. Обязательные поля включают отдельный `lecture_number`, чтобы номер лекции не извлекался из произвольной строки `course`.
-
-```yaml
-lecture_number: 4
-topic: "Основы абсолютной и относительной барической топографии"
-discipline: "Синоптическая метеорология"
-specialty: "05.03.04 Гидрометеорология"
-course: "3 курс, 6 семестр"
-hours: 2
-fgos_version: "ФГОС 3++"
-competencies:
-  - "ОПК-1: ..."
-audience_level: "бакалавры 3 курса"
-questions:
-  - "1. Физические основы абсолютной барической топографии"
-language: ru
-formulas_required: true
-```
-
-Полный шаблон: `input/lecture_config.example.md`.
-
-### 3. Запуск в Antigravity
-
-Используйте workspace workflow:
+### Antigravity
 
 ```text
 /build-lecture
-```
-
-Доступны также:
-
-```text
 /research-literature
 /design-lecture
 /write-section
+/enrich-lecture
+/plan-visuals
 /review-lecture
 /publish-docx
 /resume-lecture
 ```
 
-### 4. Запуск в Codex
+### Codex
 
-Откройте репозиторий в Codex. Корневой `AGENTS.md` задаёт проектную политику, `.codex/config.toml` ограничивает безопасный параллелизм, а профили `.codex/agents/*.toml` делят роли. Для полного запуска поручите `lecture_orchestrator` выполнить workflow `.agents/workflows/build-lecture.md`.
+Поручите `lecture_orchestrator` выполнить `.agents/workflows/build-lecture.md`. Узкие профили находятся в `.codex/agents/`, включая `methodical_enhancer` и `visualization_planner`.
 
-### 5. Совместимый запуск Gemini
-
-Старые команды сохранены как адаптеры:
+### Gemini compatibility
 
 ```bash
 gemini build-lecture
 gemini search-literature
 gemini write-section 2
+gemini enrich-lecture
+gemini plan-visuals
 gemini review-lecture
 ```
 
-Они должны следовать каноническим Skills из `.agents/`; `.gemini` больше не является источником научных правил.
+Gemini-адаптеры читают канонические Skills из `.agents/`.
 
 ## Научная прослеживаемость
 
-Каноническая ссылка внутри Markdown:
+Внутренняя ссылка:
 
 ```text
 [@src_001]
 [@src_001, с. 45]
 ```
 
-Страница допустима только при `location_status: verified`. Каждый научный тезис получает `claim_id`, отмечается в Markdown комментарием `<!-- claim:claim_id -->` и ссылается на один или несколько `evidence_id`, содержащих точный фрагмент, источник, хеш документа и координаты. Комментарии удаляются при DOCX-конвертации. Неподтверждённый тезис блокирует публикацию.
+Страница допустима только при `location_status: verified`. Каждый существенный тезис получает `claim_id` и точный evidence fragment. Локальные PDF/DOCX/тексты индексируются в `output/lit/local_index.json` и используются наравне с проверенными веб-источниками.
 
 ## Формулы
 
-Во время написания используется семантическая метка:
+При написании используется стабильная метка:
 
 ```latex
 $$
@@ -149,7 +189,7 @@ $$
 $$
 ```
 
-Ссылка в тексте: `@eq:hypsometric`. Финальные номера `(4.1)`, `(4.2)` назначаются один раз после сборки:
+После fact check:
 
 ```bash
 python scripts/number_formulas.py output/lecture_final.md \
@@ -157,49 +197,17 @@ python scripts/number_formulas.py output/lecture_final.md \
   --registry output/formula_registry.json
 ```
 
-## Проверки
+## Проверки и публикация
 
 ```bash
-# Исходная конфигурация, Skills, TOML и схемы
 python scripts/validate_pipeline.py --mode source
-
-# Модульные и интеграционные тесты
 pytest
-
-# Полный набор с обязательными артефактами
+python scripts/render_charts.py --spec output/chart_specs.json --figures output/figures_index.json
 python scripts/validate_pipeline.py --mode artifacts --strict \
   --report output/quality_report.json
-
-# DOCX
 bash scripts/md2docx/run_md2docx.sh output/lecture_final.md \
   -o output/lecture_final.docx
 python scripts/validate_docx.py output/lecture_final.docx --expect-formulas
 ```
 
-Quality gate проверяет конфигурацию, схемы, ссылки, evidence ledger, формулы, структуру лекции, связность, рецензии, fact check, иллюстрации, manifest и DOCX. Критерии описаны в `docs/QUALITY_GATES.md`. Для взвешенного A/B-сравнения платформ используйте `python evals/run_evals.py`; три типовых конфигурации находятся в `evals/fixtures/`.
-
-## Выходные материалы
-
-Главные результаты:
-
-- `output/lecture_final.md` — проверенный Markdown;
-- `output/lecture_final.docx` — Word-документ с нативными формулами;
-- `output/bibliography.json` — библиография с происхождением метаданных;
-- `output/evidence_ledger.json` — связь тезисов и доказательств;
-- `output/lecture_blueprint.json` — логическая архитектура;
-- `output/reviews/` — независимые рецензии, resolution и fact check;
-- `output/formula_registry.json` — сквозной реестр формул;
-- `output/quality_report.json` — итог проверок;
-- `output/run_manifest.json` — хеши и статус этапов.
-
-## Миграция
-
-Для безопасного обновления старой конфигурации без перезаписи исходника:
-
-```bash
-python scripts/migrate_v2.py input/lecture_config.md -o input/lecture_config.v3.md
-```
-
-Режим `--in-place` создаёт резервную копию `.v2.bak` и применяется только по явному запросу.
-
-Существующие особенности Gemini-проекта сохранены: отдельные роли, один раздел на один запуск, локальная литература, промежуточные артефакты, ФГОС, ГОСТ-ориентированное оформление, иллюстрации и DOCX. Изменён источник истины и добавлены формальные гарантии. Подробности: `docs/MIGRATION_ANTIGRAVITY_CODEX.md`.
+Главные результаты: `lecture_final.md`, `lecture_final.docx`, `bibliography.json`, `evidence_ledger.json`, `lecture_blueprint.json`, `methodical_inserts.json`, `chart_specs.json`, `image_prompts.md`, `figures_index.json`, `reviews/`, `formula_registry.json`, `quality_report.json` и `run_manifest.json`.

@@ -1,24 +1,9 @@
-# Lecture Builder 3.0 — Gemini compatibility gateway
+# Lecture Builder Gemini compatibility adapter
 
-The canonical project policy is `../AGENTS.md`. Canonical rules, workflows and Skills are under `../.agents/`. Read those files first. This `.gemini/` directory preserves legacy Gemini CLI entry points and role names; it must not become a second source of scientific or pedagogical truth.
+The canonical instructions are root `AGENTS.md` and `.agents/`. Gemini agents and commands must not duplicate scientific or pedagogical policy.
 
-## Full build
+Read `input/lecture_config.md`; `lecture_number` determines question `L.Q`, subsection `L.Q.S`, formula `L.N` and figure `L.N` numbering. The pipeline uses web and local sources for fact verification, creates theory/formulas/examples, methodical callouts, graphs, separate image prompts, reviews and DOCX. It does not reproduce experiments.
 
-Use the legacy command `gemini build-lecture` or invoke `@agents/orchestrator.md`. The orchestrator follows `../.agents/workflows/build-lecture.md`, validates hashes and delegates specialist work.
+Full pipeline: `gemini build-lecture`.
 
-## Input
-
-Required: `../input/lecture_config.md`. Validate it with:
-
-```bash
-python scripts/validate_pipeline.py --mode source
-```
-
-## Core integrity
-
-- never invent sources, metadata, pages or evidence;
-- use source-id citations and verified evidence;
-- design a lecture blueprint before sections;
-- write one section per isolated call;
-- number formulas only once after final fact check;
-- run strict validation and DOCX inspection before success.
+Partial commands: `gemini search-literature`, `gemini write-section N`, `gemini enrich-lecture`, `gemini plan-visuals`, `gemini review-lecture`.

@@ -1,14 +1,9 @@
-# Design lecture architecture
+# Design lecture structure
 
-Activate `lecture-architecture` and `fgos-competencies`.
-
-Read the validated config, bibliography, evidence ledger, literature map and glossary. Produce a single macro-level argument for the lecture, a concept dependency graph, measurable learning objectives and one section plan per configured question. Each section must define prerequisites, introduced concepts, required claims/evidence, examples, misconceptions, word/time budget and concrete incoming/outgoing logical bridges.
-
-Write:
-
-- `output/lecture_blueprint.json`
-- `output/lecture_blueprint.md`
-- `output/section_briefs/section_{N}.json`
-- compatibility prompts `output/queries/query_{N}.md` when Gemini workflows are used.
-
-Validate every JSON file against its schema before completion.
+1. Validate config, bibliography, evidence ledger, literature map and key concepts.
+2. Activate `lecture-architecture`, `document-numbering` and `fgos-competencies`.
+3. Derive question numbers `lecture_number.ordinal` and subsection numbers `lecture_number.question.subsection`.
+4. Create the central thesis, concept graph, outcomes, canonical terminology and notation.
+5. Define one blueprint section and one brief per configured question with supported claims, core example, misconception, methodical requirements and visual opportunities.
+6. Allocate time and words and reserve introduction/conclusion functions.
+7. Validate schemas, evidence cross-references, numbering, budgets and concept order.

@@ -58,10 +58,10 @@ prior_disciplines:
   - "Основы синоптической метеорологии (приземный анализ)"
 
 questions:
-  - "1. Физические основы абсолютной барической топографии (АТ)"
-  - "2. Составление и первичный анализ карт АТ"
-  - "3. Физические основы относительной барической топографии"
-  - "4. Составление и первичный анализ карт ОТ 500/1000"
+  - "4.1. Физические основы абсолютной барической топографии (АТ)"
+  - "4.2. Составление и первичный анализ карт АТ"
+  - "4.3. Физические основы относительной барической топографии"
+  - "4.4. Составление и первичный анализ карт ОТ 500/1000"
 
 language: ru
 formulas_required: true
@@ -93,6 +93,19 @@ research:
     peer_reviewed: 2
     normative: 0
 
+methodical:
+  enabled: true
+  min_inserts_per_section: 4
+  max_inserts_per_section: 5
+  required_functions: [understand, remember, apply, self_check]
+  max_word_share: 0.15
+
+visuals:
+  require_graphs: true
+  require_image_prompts: true
+  max_figures_per_section: 3
+  chart_output_format: png
+
 quality:
   word_budget_per_hour: 4000
   section_words:
@@ -100,4 +113,5 @@ quality:
     max: 2400
   require_evidence_for_claims: true
   require_fact_check_after_edit: true
+  require_numbered_question_plan: true
   max_review_cycles: 2

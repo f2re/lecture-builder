@@ -1,44 +1,12 @@
 ---
 name: final-editing
-description: Apply approved scientific and pedagogical review findings to produce the final coherent Markdown, edit log and resolved-finding map while preserving evidence and formula semantics. Use after independent reviews and before final fact check.
+description: Apply approved scientific and pedagogical findings to produce final coherent Markdown while preserving evidence, lecture-derived numbering, methodical insert markers, visual references and formula semantics. Use before final fact check.
 ---
 
 # Final editing
 
-## Inputs
+Read the draft, independent reviews, blueprint, evidence, bibliography, methodical inserts, figures/chart specs and config. Write only `output/lecture_final.md`, `output/edit_log.md` and `output/reviews/resolution.json`.
 
-- `output/lecture_draft.md`
-- `output/reviews/scientific.json`
-- `output/reviews/pedagogical.json`
-- `output/lecture_blueprint.json`
-- `output/evidence_ledger.json`
-- `output/bibliography.json`
-- `input/lecture_config.md`
+Resolve critical and major findings first. Preserve source ids, claim scope, caveats, stable formula labels, `L.Q`/`L.Q.S` headings, figure `L.N` captions and every retained `<!-- methodical:... -->` marker. Remove or rewrite a callout only when a review finding identifies a concrete problem, and record the decision.
 
-## Outputs
-
-- `output/lecture_final.md` before deterministic formula numbering
-- `output/edit_log.md`
-- `output/reviews/resolution.json`
-
-## Editing procedure
-
-1. Enumerate all blocking and non-blocking findings and map each to an explicit action.
-2. Resolve critical and major findings first. A scientifically material correction must use existing evidence or return the task to research/section writing.
-3. Improve logical flow, paragraph focus, terminology, notation, grammar and accessibility without changing supported meaning.
-4. Preserve stable source ids, claim scope, caveats, formula labels and `@eq:*` references.
-5. Remove repetition and generic transitions; replace them with relations derived from the blueprint.
-6. Record each changed passage, finding id, action, rationale and evidence used.
-7. Mark any deferred finding with a reason and publication consequence. Never claim it is resolved.
-
-## Prohibitions
-
-- no new source or page metadata;
-- no formula-semantic change without scientific re-review;
-- no deletion of limitation text merely for fluency;
-- no editing of `lecture_draft.md` in place;
-- no self-certification of fact-check status.
-
-## Completion
-
-Run deterministic checks, then hand the result to a separate scientific fact checker. The editor's work is not final until fact check passes.
+Do not add source metadata, graph values or formula changes. Do not convert a hypothetical example into an observed fact. Normalize structure with `scripts/number_structure.py` before handing the result to the independent fact checker. Do not certify your own edits.
