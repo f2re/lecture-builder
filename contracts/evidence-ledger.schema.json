@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/f2re/lecture-builder/contracts/evidence-ledger.schema.json",
+  "title": "Claim-to-evidence ledger",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "claims",
+    "evidence"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "3.0"
+    },
+    "generated_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim_id",
+          "section_id",
+          "statement",
+          "claim_type",
+          "status",
+          "evidence_ids"
+        ],
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "pattern": "^claim_[A-Za-z0-9_.:-]+$"
+          },
+          "section_id": {
+            "type": "string"
+          },
+          "statement": {
+            "type": "string",
+            "minLength": 5
+          },
+          "claim_type": {
+            "type": "string",
+            "enum": [
+              "fact",
+              "definition",
+              "formula",
+              "interpretation",
+              "pedagogical_simplification",
+              "example"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "supported",
+              "partial",
+              "unsupported",
+              "not_applicable"
+            ]
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^ev_[A-Za-z0-9_.:-]+$"
+            },
+            "uniqueItems": true
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "assumptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "evidence_id",
+          "source_id",
+          "exact_fragment",
+          "location",
+          "location_status",
+          "supports_claims"
+        ],
+        "properties": {
+          "evidence_id": {
+            "type": "string",
+            "pattern": "^ev_[A-Za-z0-9_.:-]+$"
+          },
+          "source_id": {
+            "type": "string"
+          },
+          "document_hash": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "exact_fragment": {
+            "type": "string",
+            "minLength": 5
+          },
+          "location": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 1
+              },
+              "page_label": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "section": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "paragraph": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 1
+              },
+              "offset_start": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "offset_end": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              }
+            },
+            "additionalProperties": false
+          },
+          "location_status": {
+            "type": "string",
+            "enum": [
+              "verified",
+              "approximate",
+              "unavailable"
+            ]
+          },
+          "supports_claims": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

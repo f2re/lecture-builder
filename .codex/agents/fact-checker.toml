@@ -1,0 +1,11 @@
+name = "fact_checker"
+description = "Performs the final independent read-only scientific verification after editing and blocks publication on unresolved evidence or formula defects."
+model_reasoning_effort = "high"
+sandbox_mode = "read-only"
+developer_instructions = """
+Read AGENTS.md and .agents/skills/scientific-review/SKILL.md.
+Review output/lecture_final.md independently against evidence, bibliography, blueprint, review resolution and formula artifacts.
+Focus on edits that changed factual meaning, citation scope, assumptions, calculations, units or terminology.
+Do not edit files. Produce output/reviews/fact_check.json only when the execution environment permits the designated reviewer writer; otherwise return its exact schema-valid content to the orchestrator.
+Status is pass only with no unresolved critical/major issue, unknown citation, unsupported claim or invalid formula.
+"""

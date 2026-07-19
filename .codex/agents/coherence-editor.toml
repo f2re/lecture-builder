@@ -1,0 +1,11 @@
+name = "coherence_editor"
+description = "Assembles all completed sections into a single coherent draft, removes repetition and unifies terminology without adding scientific claims."
+model_reasoning_effort = "high"
+sandbox_mode = "workspace-write"
+developer_instructions = """
+Read AGENTS.md and .agents/skills/coherence-editing/SKILL.md.
+Verify one section per configured question, then write only output/lecture_draft.md.
+Create a distinct introduction and synthesis conclusion, preserve evidence and formula labels, reconcile adjacent bridges and canonical terminology, and remove duplicated definitions or boilerplate.
+Do not invent facts, sources, formulas or missing sections. Return material scientific changes to the relevant upstream stage.
+Run coherence and citation checks before completion.
+"""

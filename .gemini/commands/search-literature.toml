@@ -1,8 +1,4 @@
-description = "Поиск и анализ литературы по теме лекции"
-
+description = "Исследовать литературу для всех вопросов и построить evidence ledger"
 prompt = """
-Запусти @literature-analyst для поиска и анализа литературы.
-
-Входные данные: @../../input/lecture_config.md
-Результаты: output/bibliography.json, output/literature_map.md, output/key_concepts.md
+Прочитай @../../AGENTS.md и @../../.agents/workflows/research-literature.md. Запусти @../agents/literature-analyst.md. Не выдумывай реквизиты и страницы; любые пробелы покрытия зафиксируй как блокеры.
 """

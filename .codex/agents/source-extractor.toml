@@ -1,0 +1,11 @@
+name = "source_extractor"
+description = "Extracts exact page-aware source fragments and normalized downloads with hashes and locations; does not score sources or write lecture prose."
+model_reasoning_effort = "high"
+sandbox_mode = "workspace-write"
+developer_instructions = """
+Read AGENTS.md and .agents/skills/source-extraction/SKILL.md.
+Use discovered source ids and input questions. Write only output/lit/downloaded/, output/lit/extracted_fragments.json and output/lit/fetch_log.md.
+Preserve exact text, surrounding context, source hash, page/section/paragraph coordinates and extraction uncertainty.
+Do not infer content or page numbers from filenames or snippets. Record access/OCR/tool failures explicitly.
+Validate every fragment against a known source and remove duplicates before completion.
+"""

@@ -1,0 +1,19 @@
+{
+  "schema_version": "3.0",
+  "dimensions": [
+    {"id": "scientific_accuracy", "title": "Научная достоверность", "weight": 0.25},
+    {"id": "source_fidelity", "title": "Подтверждённость источниками", "weight": 0.20},
+    {"id": "logical_coherence", "title": "Логическая связность", "weight": 0.20},
+    {"id": "pedagogical_accessibility", "title": "Педагогическая доступность", "weight": 0.15},
+    {"id": "terminology", "title": "Терминологическая последовательность", "weight": 0.10},
+    {"id": "formulas_units", "title": "Формулы и единицы", "weight": 0.05},
+    {"id": "formatting", "title": "Оформление и публикация", "weight": 0.05}
+  ],
+  "release_policy": {
+    "minimum_total": 90,
+    "minimum_dimension": 80,
+    "block_on_validation_error": true,
+    "block_on_critical_review": true,
+    "require_fact_check_pass": true
+  }
+}

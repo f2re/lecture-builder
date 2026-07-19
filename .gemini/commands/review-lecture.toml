@@ -1,8 +1,4 @@
-description = "Методическая рецензия готового черновика лекции"
-
+description = "Провести независимые научную и педагогическую рецензии"
 prompt = """
-Запусти @reviewer для проведения методической экспертизы.
-
-Входные данные: @../../output/lecture_draft.md
-Результат: output/review_report.md
+Прочитай @../../AGENTS.md и @../../.agents/workflows/review-lecture.md. Запусти @../agents/reviewer.md отдельно в scientific и pedagogical режимах. Не редактируй лекцию во время рецензирования.
 """

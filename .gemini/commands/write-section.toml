@@ -1,11 +1,4 @@
-description = "Написание конкретного раздела лекции"
-
+description = "Написать один раздел N по валидированному section brief"
 prompt = """
-Запусти @section-writer для написания раздела лекции.
-
-Входные данные:
-- Запрос: @../../output/queries/query_{{n}}.md
-- Литература: @../../output/bibliography.json
-- Глоссарий: @../../output/key_concepts.md
-Результат: output/sections/section_{{n}}.md
+Прочитай @../../AGENTS.md и @../../.agents/workflows/write-section.md. Номер N возьми из аргумента пользователя. Запусти @../agents/section-writer.md ровно для одного output/section_briefs/section_N.json. Не назначай финальные номера формул.
 """

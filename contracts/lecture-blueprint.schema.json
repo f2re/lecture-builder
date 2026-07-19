@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/f2re/lecture-builder/contracts/lecture-blueprint.schema.json",
+  "title": "Lecture architecture blueprint",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "topic",
+    "thesis",
+    "audience_prerequisites",
+    "learning_objectives",
+    "concept_graph",
+    "sections"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "3.0"
+    },
+    "topic": {
+      "type": "string",
+      "minLength": 3
+    },
+    "thesis": {
+      "type": "string",
+      "minLength": 20
+    },
+    "problem_statement": {
+      "type": "string",
+      "minLength": 10
+    },
+    "audience_prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "learning_objectives": {
+      "type": "object",
+      "required": [
+        "know",
+        "apply",
+        "master"
+      ],
+      "properties": {
+        "know": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "apply": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "master": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "concept_graph": {
+      "type": "object",
+      "required": [
+        "nodes",
+        "edges"
+      ],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "term"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "term": {
+                "type": "string"
+              },
+              "definition_source_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "from",
+              "to",
+              "relation"
+            ],
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "to": {
+                "type": "string"
+              },
+              "relation": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "section_id",
+          "number",
+          "question",
+          "purpose",
+          "prerequisites",
+          "introduces",
+          "claim_ids",
+          "bridge_in",
+          "bridge_out",
+          "examples",
+          "misconceptions",
+          "minutes",
+          "word_budget"
+        ],
+        "properties": {
+          "section_id": {
+            "type": "string",
+            "pattern": "^q\\d+$"
+          },
+          "number": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "question": {
+            "type": "string",
+            "minLength": 3
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 10
+          },
+          "prerequisites": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "introduces": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "claim_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "bridge_in": {
+            "type": "string",
+            "minLength": 10
+          },
+          "bridge_out": {
+            "type": "string",
+            "minLength": 10
+          },
+          "examples": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "misconceptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "minutes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "word_budget": {
+            "type": "integer",
+            "minimum": 300
+          },
+          "formula_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "competency_codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/f2re/lecture-builder/contracts/review-report.schema.json",
+  "title": "Machine-readable lecture review",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "review_type",
+    "status",
+    "score",
+    "findings",
+    "checks"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "3.0"
+    },
+    "review_type": {
+      "type": "string",
+      "enum": [
+        "scientific",
+        "pedagogical",
+        "coherence",
+        "fact_check"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "revise",
+        "block"
+      ]
+    },
+    "score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "finding_id",
+          "severity",
+          "section",
+          "problem",
+          "required_action"
+        ],
+        "properties": {
+          "finding_id": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "major",
+              "minor",
+              "note"
+            ]
+          },
+          "section": {
+            "type": "string"
+          },
+          "fragment": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "problem": {
+            "type": "string",
+            "minLength": 5
+          },
+          "rule": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "claim_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "required_action": {
+            "type": "string",
+            "minLength": 5
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "enum": [
+          "pass",
+          "fail",
+          "warning",
+          "not_applicable"
+        ]
+      }
+    },
+    "summary": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,6 +1,6 @@
 ---
 name: document-assembler
-description: "Use AFTER all sections are written. Assembles all sections into a unified lecture document following the standard structure: title, topic, objectives, questions, sections with content, formulas, summary, bibliography. Validates that all expected section files exist before assembly."
+description: Assemble all validated sections into one coherent draft without adding unsupported scientific claims.
 tools:
   - read_file
   - write_file
@@ -9,6 +9,4 @@ tools:
 model: gemini-2.5-pro
 ---
 
-Сборщик единого документа лекции из готовых разделов.
-
-@../workflows/document-assembler.md
+Read `@../../AGENTS.md` and `@../../.agents/skills/coherence-editing/SKILL.md`. Write only `output/lecture_draft.md`. Verify all sections, reconcile bridges, terminology and repetition, and return material scientific changes upstream.

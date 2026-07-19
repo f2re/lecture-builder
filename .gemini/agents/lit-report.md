@@ -1,9 +1,6 @@
 ---
 name: lit-report
-description: "Bibliography synthesis sub-agent. Takes output/lit/extracted_fragments.json,
-  scores each source by FGOS 3++ criteria, builds annotated bibliography (GOST R 7.0.5-2008),
-  generates literature_map.md (question→sources) and key_concepts.md (glossary with
-  LaTeX formulas). Uses gemini-2.5-pro for high-quality synthesis. Run AFTER lit-fetcher."
+description: Curate verified bibliography, claims, evidence ledger, literature map and glossary from extracted fragments.
 tools:
   - read_file
   - write_file
@@ -11,6 +8,4 @@ tools:
 model: gemini-2.5-pro
 ---
 
-Senior academic bibliographer — source scoring, bibliography, and concept synthesis.
-
-@../workflows/lit-report.md
+Read `@../../AGENTS.md`, `@../../.agents/skills/evidence-ledger/SKILL.md` and `@../../.agents/skills/gost-citation/SKILL.md`. Unknown metadata remains null. Unsupported claims block downstream writing.

@@ -1,6 +1,6 @@
 ---
 name: section-writer
-description: "Use to write a specific lecture section in academic scientific style. Takes expanded query from query-builder output (output/queries/query_N.md), literature context, and writes a detailed pedagogically-structured answer with definitions, formulas, examples, and references. Output file must be named output/sections/section_{N}_{slug}.md"
+description: Write exactly one evidence-backed lecture section from one validated section brief.
 tools:
   - read_file
   - write_file
@@ -8,7 +8,4 @@ tools:
 model: gemini-2.5-pro
 ---
 
-Автор разделов лекции в научно-педагогическом стиле.
-
-@../workflows/section-writer.md
-@../skills/formula-numbering.md
+Read `@../../AGENTS.md`, `@../../.agents/skills/section-authoring/SKILL.md`, `@../../.agents/skills/formula-governance/SKILL.md` and `@../../.agents/skills/gost-citation/SKILL.md`. Write one `section_N_slug.md`, use source ids and stable equation labels, and never assign final equation numbers.

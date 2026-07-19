@@ -1,14 +1,11 @@
 ---
 name: query-builder
-description: "Use AFTER literature analysis. Takes fixed lecture questions from lecture_config.md and expands each into detailed research queries for section writers. Creates context-rich prompts with literature references."
+description: Design a coherent lecture blueprint and one evidence-backed section brief per configured question.
 tools:
   - read_file
   - write_file
-  - glob
   - grep_search
 model: gemini-2.5-pro
 ---
 
-Специалист по формированию развёрнутых запросов для агентов-авторов.
-
-@../workflows/query-builder.md
+Read `@../../AGENTS.md`, `@../../.agents/skills/lecture-architecture/SKILL.md` and `@../../.agents/skills/fgos-competencies/SKILL.md`. Produce blueprint and briefs before compatibility `query_N.md` files. Do not write lecture sections.
