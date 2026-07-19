@@ -1,56 +1,38 @@
-# Migration from Gemini-centric 2.x to cross-platform 3.0
+# Cross-platform migration and 3.1 synchronization
 
-## Objective
+## Canonical layer
 
-Preserve the useful 2.x behavior—specialized roles, resumable stages, one section per context, local literature, ФГОС/ГОСТ support, examples, review, illustrations and DOCX—while removing platform lock-in and prompt-only guarantees.
+`.agents/rules`, `.agents/workflows` and `.agents/skills` remain the single source of behavioral policy. Antigravity consumes them directly; Codex TOML profiles and Gemini compatibility files are narrow adapters.
 
-## Source-of-truth change
+## 3.1 role map
 
-Before:
+| Capability | Shared Skill | Codex profile | Gemini adapter |
+|---|---|---|---|
+| orchestration | `lecture-orchestration` | `lecture_orchestrator` | `orchestrator` |
+| research/local corpus | `literature-search`, `source-extraction`, `evidence-ledger` | search/extract/curate profiles | lit-* adapters |
+| structure | `lecture-architecture`, `document-numbering` | `lecture_architect` | `query-builder` |
+| section generation | `section-authoring` | `section_writer` | `section-writer` |
+| methodical inserts | `methodical-enrichment` | `methodical_enhancer` | `methodical-enhancer` |
+| graphs/image prompts | `illustration-planning` | `visualization_planner` | `visualization-planner` |
+| assembly | `coherence-editing` | `coherence_editor` | `document-assembler` |
+| reviews/fact check | scientific + pedagogical Skills | reviewer profiles | `reviewer` |
+| final editing | `final-editing` | `final_editor` | `editor` |
+| formulas/DOCX | numbering, formula and DOCX Skills | `publisher` | orchestrated scripts |
 
-```text
-.gemini/workflows → .gemini/agents → .gemini/skills
-.codex/agents/*.md → wrappers around Gemini files
+## Numbering migration
+
+`lecture_number` is authoritative. Legacy questions `1. ...`, `2. ...` are migrated to `L.1. ...`, `L.2. ...`. Generated headings use `L.Q` and `L.Q.S`; formula, figure and table counters are separate global `L.N` sequences.
+
+Run:
+
+```bash
+python scripts/migrate_v2.py input/lecture_config.md -o input/lecture_config.v3.md
+python scripts/number_structure.py output/lecture_draft.md -o output/lecture_draft.md
+python scripts/validate_numbering.py output/lecture_draft.md
 ```
 
-After:
+## Methodical and visual additions
 
-```text
-.agents/rules + .agents/workflows + .agents/skills  (canonical)
-        ├─ Antigravity native workspace layer
-        ├─ Codex TOML role adapters
-        └─ Gemini compatibility adapters
-```
+The methodical enhancer produces typed JSON inserts rather than editing prose. The visualization planner produces a figure index, deterministic chart specs and a separate image prompt file. Required charts are rendered by `scripts/render_charts.py` before assembly and review.
 
-## Role mapping
-
-| 2.x role | 3.0 responsibility |
-|---|---|
-| orchestrator | orchestration + hash manifest only |
-| literature-analyst | orchestration of three research roles |
-| lit-searcher | literature-searcher |
-| lit-fetcher | source-extractor |
-| lit-report | evidence-curator |
-| query-builder | lecture-architect |
-| section-writer | section-writer |
-| document-assembler | coherence-editor |
-| reviewer | scientific-reviewer + pedagogical-reviewer |
-| editor | final-editor + independent fact-checker + publisher |
-
-## Contract changes
-
-- `lecture_number` is explicit.
-- `evidence_ledger.json` is mandatory.
-- `lecture_blueprint.json` and `section_briefs/` precede writing.
-- source metadata carries verification/provenance status.
-- citations use stable source ids.
-- formulas use stable labels until one global numbering pass.
-- reviews are JSON and independently executed.
-- manifest freshness uses content hashes.
-- strict validation is mandatory before publication.
-
-## Compatibility policy
-
-`.gemini` remains for legacy command names, but adapters must reference `.agents`. New scientific or pedagogical rules must be added to a shared Skill, not copied into Gemini/Codex prompts.
-
-Old generated outputs should not be trusted solely because they exist. The first 3.0 run should initialize a new manifest, validate or regenerate research evidence, then rebuild downstream artifacts.
+The manifest remains content-hash based. It does not track prompt/model versions. Scientific experiment reproduction is deliberately outside the lecture-generation scope.

@@ -1,4 +1,2 @@
-description = "Запустить проверяемый pipeline Lecture Builder 3.0"
-prompt = """
-Прочитай @../../AGENTS.md и @../../.agents/workflows/build-lecture.md. Используй @../agents/orchestrator.md как менеджера pipeline. Не доверяй наличию старых output-файлов: проверяй manifest и хеши. Финальный результат допустим только после strict quality gate и DOCX validation.
-"""
+description = "Полный pipeline: источники, структура, разделы, методические вставки, графики, рецензии и DOCX"
+prompt = "Следуй @../../.agents/workflows/build-lecture.md и корневому @../../AGENTS.md."

@@ -1,3 +1,1 @@
-# Compatibility workflow: lecture architecture
-
-Follow `@../../.agents/workflows/design-lecture.md` and `@../../.agents/skills/lecture-architecture/SKILL.md` exactly.
+Canonical workflow: read root `AGENTS.md` and the matching Skills in `.agents/skills/`. The Gemini adapter must follow shared numbering, evidence, methodical and visual contracts without duplicating them.

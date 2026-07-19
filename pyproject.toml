@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lecture-builder-tools"
-version = "3.0.0"
+version = "3.1.0"
 description = "Deterministic validation and publishing tools for Lecture Builder"
 requires-python = ">=3.11"
 dependencies = [
@@ -12,12 +12,11 @@ dependencies = [
   "jsonschema>=4.20",
   "python-docx>=1.1",
   "lxml>=5.0",
+  "matplotlib>=3.8",
 ]
 
 [project.optional-dependencies]
-dev = [
-  "pytest>=8.0",
-]
+dev = ["pytest>=8.0"]
 
 [tool.setuptools]
 packages = ["lecture_tools"]

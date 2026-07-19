@@ -1,79 +1,69 @@
 # Quality gates
 
-The target is a release decision based on zero blocking errors, not an unverifiable subjective “10/10”. The report also computes a score, but a high score never overrides a blocker.
+A high score never overrides a blocker.
 
-## Source gate
+## Source and configuration
 
-- valid lecture configuration and explicit lecture number;
-- all JSON schemas compile;
-- every Skill has valid frontmatter;
-- every Codex TOML profile has required fields;
-- no legacy Markdown Codex profiles;
-- root instructions remain within practical context limits;
-- platform adapters point to canonical `.agents` content.
+- valid config and explicit `lecture_number`;
+- configured questions use `lecture_number.question` numbering;
+- schemas compile, Skills have frontmatter and Codex TOML profiles are valid;
+- Antigravity, Codex and Gemini adapters point to the same `.agents` layer;
+- no experiment-reproduction stage or prompt/model manifest tracking is required.
 
-## Research/evidence gate
+## Research and evidence
 
-- every question covered or explicitly blocked;
-- unique sources and stable ids;
-- provenance for metadata;
-- exact non-empty fragments;
+- web and local source coverage for every question;
+- exact fragments and metadata provenance;
 - verified pages for page citations;
-- no supported claim without evidence;
-- no unsupported claim in publishable content;
-- all claim/evidence/source cross-references resolve.
+- no supported claim without evidence and no unsupported claim in publishable content.
 
-## Architecture gate
+## Architecture and numbering
 
-- one blueprint and one brief per configured question;
-- measurable objectives and competency coverage;
+- one blueprint section/brief per question;
+- display numbers `L.Q`, subsections `L.Q.S`, sequential and matching config;
 - concept prerequisites precede use;
-- evidence ids resolve;
-- budgets match configured hours;
-- incoming/outgoing bridges are content-specific.
+- time/word budgets, competencies, methodical requirements and visual opportunities are complete.
 
-## Text gate
+## Text and methodical inserts
 
-- expected headings and all questions present;
-- one main idea per paragraph;
-- no duplicate definitions/paragraphs;
-- required examples, limitations, misconceptions and conclusions;
-- terminology and notation consistent;
-- citations resolve;
-- no legacy citation forms in final Markdown;
-- introduction/conclusion have distinct functions.
+- coherent theory, definitions before use, formula interpretation and core examples;
+- required methodical learning functions per question;
+- mnemonics are accurate and reversible;
+- thematic examples are source-backed or visibly hypothetical;
+- insert density stays within config and required hidden markers occur in draft/final;
+- no repeated definitions, boilerplate transitions or callout clutter.
 
-## Review gate
+## Visuals and graphs
+
+- `figures_index.json`, `chart_specs.json` and separate `image_prompts.md` exist;
+- figures use global `L.N` numbers and captions agree with index;
+- graphs have axes, units, data policy and source ids when data-bound;
+- schematic graphs are visibly labeled and contain no invented observational values;
+- required graph assets are rendered, non-empty, hash-matched and synchronized with the figure index;
+- prompts cannot invent quantitative curves, readings or map contours.
+
+## Reviews
 
 - independent scientific and pedagogical reports;
-- all critical/major findings resolved or publication blocked;
-- resolution map covers every finding;
-- independent final fact check status `pass`.
+- callouts, examples, graphs and captions included in review scope;
+- critical/major findings resolved;
+- independent final fact check has status `pass`.
 
-## Formula gate
+## Formulas and publication
 
-- unique stable labels before numbering;
-- no unresolved references;
-- one lecture-wide sequence after numbering;
-- every formula has symbol/unit explanation;
-- formula registry matches Markdown;
-- no editor-introduced semantic change without re-review.
-
-## Publication gate
-
-- valid DOCX ZIP package;
-- A4, margins, body font, headings and footer checks;
-- native OMML equations when required;
-- centered equations with right-aligned numbers;
-- figure placeholders/index consistent;
-- strict artifact validation produces zero errors.
+- stable labels before numbering and one global `L.N` sequence after fact check;
+- symbols, units, assumptions and references complete;
+- DOCX contains native OMML, right-aligned numbers, numbered headings, captions and readable callouts;
+- strict validation produces zero errors.
 
 ## Commands
 
 ```bash
 python scripts/validate_pipeline.py --mode source
 pytest
-python scripts/validate_pipeline.py --mode artifacts --strict \
-  --report output/quality_report.json
+python scripts/number_structure.py output/lecture_final.md -o output/lecture_final.md
+python scripts/validate_numbering.py output/lecture_final.md
+python scripts/render_charts.py --spec output/chart_specs.json --figures output/figures_index.json
+python scripts/validate_pipeline.py --mode artifacts --strict --report output/quality_report.json
 python scripts/validate_docx.py output/lecture_final.docx --expect-formulas
 ```

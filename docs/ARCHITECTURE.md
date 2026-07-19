@@ -1,78 +1,56 @@
 # Architecture
 
-## Design principles
+Lecture Builder separates generative judgment from deterministic assurance. Agents search, extract, design, write, enrich, visualize, review and edit; schemas and scripts enforce provenance, numbering, cross-references and publication structure.
 
-Lecture Builder separates generative judgment from deterministic assurance. Agents perform search, synthesis, pedagogy and editing; schemas and scripts enforce structure, provenance, freshness, cross-references, equation numbering and DOCX packaging.
+The canonical layer is `.agents/`: rules, workflows and progressively loaded Skills. Antigravity consumes it directly; Codex adds TOML role/sandbox adapters; Gemini maps legacy commands to the same layer.
 
-The canonical layer is `.agents/`:
-
-- `rules/` contains always-on invariants;
-- `workflows/` contains user-invokable stage recipes;
-- `skills/` contains progressively loaded domain and process knowledge.
-
-Platform adapters are deliberately thin:
-
-- Antigravity consumes `.agents` directly;
-- Codex adds role/sandbox TOML under `.codex/agents`;
-- Gemini maps legacy commands and agents to the same Skills.
-
-## Artifact dependency graph
+## Artifact graph
 
 ```text
 lecture_config
 ├─→ local_index + search_results
 │   └─→ extracted_fragments
 │       └─→ bibliography + evidence_ledger + literature_map + glossary
-│           └─→ lecture_blueprint + section_briefs
+│           └─→ numbered blueprint + numbered section briefs
 │               └─→ section_N × N
+│                   ├─→ methodical_inserts
+│                   ├─→ figures_index + chart_specs + image_prompts
+│                   │   └─→ generated chart assets
 │                   └─→ lecture_draft
 │                       ├─→ scientific_review
 │                       └─→ pedagogical_review
 │                           └─→ lecture_final + resolution
 │                               └─→ fact_check
-│                                   └─→ formula_registry + numbered Markdown
-│                                       ├─→ figures artifacts
-│                                       └─→ DOCX
-└────────────────────────────────────────────→ run_manifest + quality_report
+│                                   └─→ formula_registry + DOCX
+└────────────────────────────────────────→ run_manifest + quality_report
 ```
 
 ## Trust boundaries
 
-### Research discovery
+Search results are leads, not evidence. Extraction preserves exact fragments, hashes and locations. Evidence curation links atomic claims to verified fragments. The blueprint freezes concept order, `L.Q`/`L.Q.S` numbering, terminology, evidence requirements, methodical goals and visual opportunities.
 
-Search results are leads, not evidence. Snippets cannot establish authorship, date, page or factual claims.
+Section writers own scientific exposition and the core worked example. The methodical enhancer owns only structured student-facing callouts. The visualization planner owns only figure metadata, chart specs and separate image prompts. The coherence editor integrates these artifacts but cannot add claims.
 
-### Extraction
+Scientific and pedagogical reviewers are read-only. Scientific review covers theory, formulas, examples, callouts, graph data provenance and captions. Pedagogical review covers progression, cognitive load, mnemonic quality, insert density and visual usefulness. The editor cannot approve its own changes; final fact check reopens evidence.
 
-An exact fragment plus source hash and location becomes potential evidence. Lost page mapping is represented as unavailable, not guessed.
+The system verifies lecture content against sources and the local corpus. Scientific experiment reproduction/replication is outside this architecture.
 
-### Evidence curation
+## Numbering
 
-Atomic claims are classified as supported, partial, unsupported or not applicable. Only supported claims enter normal section briefs; partial claims carry explicit limits.
+`lecture_number` determines all visible prefixes:
 
-### Architecture and writing
+```text
+question      L.Q
+subsection    L.Q.S
+formula       L.N (global formula counter)
+figure        L.N (global figure counter)
+table         L.N (global table counter)
+```
 
-The blueprint freezes concept order, terminology, evidence requirements, logical bridges and budgets. Section writers operate on disjoint files and do not assign global equation numbers.
-
-### Review and editing
-
-Scientific and pedagogical reviewers are read-only and independent. The editor resolves findings but cannot approve its own changes. Final fact check reopens evidence after editing.
-
-### Publication
-
-Formula numbering, Markdown validation, DOCX conversion and document inspection are deterministic. The publisher cannot override a failed gate.
-
-## Freshness
-
-`run_manifest.json` stores stage input hashes and output hashes. A stage is fresh only when current inputs and outputs match stored values and validation still passes. A changed config invalidates all dependent stages; changed evidence invalidates architecture and downstream content.
+Formula, figure and table sequences are independent global counters. Structure headings are normalized before review; formulas are numbered after fact check.
 
 ## Parallel execution
 
-Parallelism is limited to work with no shared output:
+Safe: per-question search, per-source extraction, per-section authoring, methodical enrichment versus visual planning, and independent reviews.
 
-- per-question search;
-- per-source extraction;
-- per-section authoring after blueprint freeze;
-- independent reviews.
-
-Everything that creates a global ordering or shared state is serialized.
+Serialized: manifest writes, blueprint approval, structure normalization, chart rendering, assembly, editing, fact check, formula numbering and publication.

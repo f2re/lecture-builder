@@ -1,4 +1,4 @@
-description = "Написать один раздел N по валидированному section brief"
+description = "Написать один вопрос лекции по валидированному section brief"
 prompt = """
-Прочитай @../../AGENTS.md и @../../.agents/workflows/write-section.md. Номер N возьми из аргумента пользователя. Запусти @../agents/section-writer.md ровно для одного output/section_briefs/section_N.json. Не назначай финальные номера формул.
+Прочитай @../../AGENTS.md и @../../.agents/workflows/write-section.md. Локальный номер N возьми из аргумента пользователя и запусти @../agents/section-writer.md ровно для output/section_briefs/section_N.json. Видимый заголовок обязан использовать lecture_number.N, подразделы — lecture_number.N.S. Не назначай финальные номера формул и не создавай методические вставки или визуальные артефакты.
 """

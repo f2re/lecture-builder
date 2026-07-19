@@ -1,45 +1,14 @@
 ---
 name: scientific-review
-description: Perform an independent read-only scientific audit of a lecture draft against verified evidence, formulas, units, assumptions, terminology and source fidelity. Use after assembly and after final editing for fact check; never edit the lecture being reviewed.
+description: Perform an independent read-only scientific audit of lecture theory, formulas, examples, methodical inserts, graph specifications, captions and source fidelity. Use after assembly and after final editing; never edit the reviewed lecture.
 ---
 
 # Scientific review
 
-## Inputs
+Audit the target Markdown against the local-source bibliography, exact evidence ledger, blueprint, methodical insert artifact, chart specs and formula/figure artifacts.
 
-- target lecture Markdown
-- `output/evidence_ledger.json`
-- `output/bibliography.json`
-- `output/lecture_blueprint.json`
-- `input/lecture_config.md`
-- formula registry when available
+Check claim fidelity; source/page integrity; formula form, signs, variables, units and limits; accepted terminology; causality and approximations; worked-example arithmetic; graph data provenance, transformations, axes and captions; and time-sensitive claims.
 
-## Output
+Fact-bearing methodical inserts are scientific content. Reject a mnemonic, analogy, formula-reading aid, common-error correction or professional example that distorts scope, direction, dimensional meaning or causal interpretation. Hypothetical values must be labeled as illustrative.
 
-Write a schema-valid report such as `output/reviews/scientific.json` or `output/reviews/fact_check.json`.
-
-## Review dimensions
-
-1. Claim fidelity: every scientific claim is supported by linked evidence and does not exceed the source.
-2. Source integrity: citations resolve, page references are verified and quotations are exact.
-3. Formula correctness: mathematical form, derivation, signs, variables, units, dimensions and applicability.
-4. Terminology: accepted discipline-specific meanings, no silent synonym drift.
-5. Causality: correlation, approximation and pedagogical simplification are not presented as universal causation.
-6. Assumptions and limits: boundary conditions and known exceptions are visible where they affect interpretation.
-7. Examples: arithmetic, units and conclusion are correct and do not imply unsupported generality.
-8. Recency: time-sensitive statements use sufficiently current evidence or state their historical scope.
-
-## Severity
-
-- `critical`: false or unsupported central claim, invalid formula, fabricated source/location, unsafe instruction or contradiction that invalidates the lecture.
-- `major`: materially misleading omission, terminology error, incomplete applicability limit or broken citation chain.
-- `minor`: local precision or presentation issue with no material scientific effect.
-- `note`: optional enhancement.
-
-## Finding contract
-
-Each finding names an id, severity, exact section/location, quoted target fragment, violated criterion, supporting source/evidence ids, required correction and whether publication is blocked.
-
-## Independence
-
-Do not rewrite the lecture and do not accept the editor's assertions as proof. Reopen evidence when an edit changes factual meaning. Status is `pass` only with no critical/major unresolved finding and no unsupported claim.
+This pipeline verifies claims against sources and local materials; it does not reproduce scientific experiments. Status is `pass` only when no unsupported claim, invalid formula, invented graph data, misleading insert or unresolved critical/major finding remains.

@@ -6,6 +6,7 @@ from typing import Any
 
 from .artifact_common import _claim_map
 from .models import ValidationResult
+from .numbering import parse_config_question, question_number, subsection_number
 
 
 def validate_blueprint(
@@ -19,6 +20,10 @@ def validate_blueprint(
     if not isinstance(blueprint, dict):
         result.add("blueprint.type", "Blueprint должен быть объектом", path=path)
         return result
+
+    lecture_number = int(config.get("lecture_number") or 0)
+    if blueprint.get("lecture_number") != lecture_number:
+        result.add("blueprint.lecture_number", "lecture_number blueprint не совпадает с config", path=path)
 
     sections = blueprint.get("sections") or []
     if not isinstance(sections, list):
@@ -44,6 +49,38 @@ def validate_blueprint(
         if not isinstance(section, dict):
             result.add("blueprint.section_type", "Раздел blueprint должен быть объектом", path=path, location=str(index - 1))
             continue
+        expected_display = question_number(lecture_number, index)
+        if section.get("display_number") != expected_display:
+            result.add(
+                "blueprint.display_number",
+                f"Раздел {index} должен иметь display_number={expected_display}",
+                path=path,
+                location=f"sections/{index - 1}",
+            )
+        if index <= len(questions):
+            descriptor = parse_config_question(str(questions[index - 1]), index)
+            if descriptor and str(section.get("question") or "").strip() != descriptor.title:
+                result.add(
+                    "blueprint.question_title",
+                    "Название вопроса blueprint не совпадает с конфигурацией",
+                    severity="warning",
+                    path=path,
+                    location=f"sections/{index - 1}",
+                    details={"expected": descriptor.title, "actual": section.get("question")},
+                )
+        subsections = section.get("subsections") or []
+        if not subsections:
+            result.add("blueprint.subsections_empty", f"Раздел {index} не содержит подразделов", path=path)
+        for sub_index, subsection in enumerate(subsections, start=1):
+            expected_sub = subsection_number(lecture_number, index, sub_index)
+            if not isinstance(subsection, dict) or subsection.get("number") != expected_sub:
+                result.add(
+                    "blueprint.subsection_number",
+                    f"Ожидался номер подраздела {expected_sub}",
+                    path=path,
+                    location=f"sections/{index - 1}/subsections/{sub_index - 1}",
+                )
+
         total_minutes += int(section.get("minutes") or 0)
         total_words += int(section.get("word_budget") or 0)
         claims = section.get("claim_ids") or []
@@ -87,7 +124,32 @@ def validate_blueprint(
                 )
             else:
                 formula_owners[str(formula_id)] = index
+        required_methodical = {str(item) for item in ((config.get("methodical") or {}).get("required_functions") or [])}
+        actual_methodical = {str(item) for item in section.get("methodical_requirements") or []}
+        missing_methodical = sorted(required_methodical - actual_methodical)
+        if (config.get("methodical") or {}).get("enabled") and missing_methodical:
+            result.add(
+                "blueprint.methodical_coverage",
+                f"Раздел {index} не покрывает methodical functions {missing_methodical}",
+                path=path,
+                location=f"sections/{index - 1}",
+            )
         covered_competencies.update(str(item) for item in section.get("competency_codes") or [])
+
+    if (config.get("visuals") or {}).get("require_graphs"):
+        chart_opportunities = sum(
+            1
+            for section in sections
+            if isinstance(section, dict)
+            for item in section.get("visual_opportunities") or []
+            if isinstance(item, dict) and item.get("type") == "chart"
+        )
+        if chart_opportunities == 0:
+            result.add(
+                "blueprint.chart_opportunity",
+                "Конфигурация требует графики, но blueprint не содержит visual_opportunity type=chart",
+                path=path,
+            )
 
     academic_minutes = round(float(config.get("hours") or 0) * 45)
     if total_minutes > academic_minutes:

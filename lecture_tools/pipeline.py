@@ -24,9 +24,12 @@ from .config import load_config, validate_config
 from .docx_validation import validate_docx
 from .formulas import validate_formula_markdown
 from .io import dump_json, load_json
+from .methodical import validate_methodical_inserts
 from .models import Finding, ValidationResult
+from .numbering import validate_document_numbering
 from .project import validate_project
 from .schemas import load_schema, validate_instance
+from .visuals import validate_chart_specs, validate_figure_metadata
 
 Mode = Literal["source", "artifacts", "all"]
 
@@ -37,6 +40,8 @@ ARTIFACT_SCHEMAS = {
     "output/bibliography.json": "bibliography",
     "output/evidence_ledger.json": "evidence-ledger",
     "output/lecture_blueprint.json": "lecture-blueprint",
+    "output/methodical_inserts.json": "methodical-inserts",
+    "output/chart_specs.json": "chart-specs",
     "output/run_manifest.json": "run-manifest",
     "output/formula_registry.json": "formula-registry",
     "output/figures_index.json": "figures-index",
@@ -58,6 +63,8 @@ REQUIRED_ARTIFACTS = [
     "output/key_concepts.md",
     "output/lecture_blueprint.json",
     "output/lecture_blueprint.md",
+    "output/methodical_inserts.json",
+    "output/chart_specs.json",
     "output/lecture_draft.md",
     "output/reviews/scientific.json",
     "output/reviews/pedagogical.json",
@@ -204,6 +211,7 @@ def validate_artifacts(root: str | Path, *, strict: bool = False) -> list[Valida
         markdown = path.read_text(encoding="utf-8")
         markdown_values[relative] = markdown
         results.append(validate_coherence(markdown, config, path=path))
+        results.append(validate_document_numbering(markdown, config, path=path))
         results.append(_attach_path(validate_formula_markdown(markdown, lecture_number or None), path))
         if bibliography is not None:
             citation_result = validate_citations(markdown, bibliography, path=path)
@@ -221,6 +229,19 @@ def validate_artifacts(root: str | Path, *, strict: bool = False) -> list[Valida
                     path=path,
                 )
             )
+
+    methodical = loaded.get("output/methodical_inserts.json")
+    if methodical is not None and blueprint is not None and evidence is not None:
+        results.append(
+            validate_methodical_inserts(
+                methodical,
+                config,
+                blueprint,
+                evidence,
+                markdown_values,
+                path=base / "output/methodical_inserts.json",
+            )
+        )
 
     final_markdown = markdown_values.get("output/lecture_final.md", "")
     registry = loaded.get("output/formula_registry.json")
@@ -279,6 +300,39 @@ def validate_artifacts(root: str | Path, *, strict: bool = False) -> list[Valida
                 lecture_number=lecture_number,
                 source_ids=source_ids,
                 path=base / "output/figures_index.json",
+            )
+        )
+        results.append(
+            validate_figure_metadata(
+                figures,
+                config,
+                final_markdown,
+                root=base,
+                path=base / "output/figures_index.json",
+            )
+        )
+    charts = loaded.get("output/chart_specs.json")
+    if charts is not None:
+        known_claim_ids = {
+            str(item.get("claim_id"))
+            for item in ((evidence or {}).get("claims") or [])
+            if isinstance(item, dict) and item.get("claim_id")
+        }
+        known_evidence_ids = {
+            str(item.get("evidence_id"))
+            for item in ((evidence or {}).get("evidence") or [])
+            if isinstance(item, dict) and item.get("evidence_id")
+        }
+        results.append(
+            validate_chart_specs(
+                charts,
+                figures,
+                config,
+                source_ids,
+                claim_ids=known_claim_ids,
+                evidence_ids=known_evidence_ids,
+                root=base,
+                path=base / "output/chart_specs.json",
             )
         )
 

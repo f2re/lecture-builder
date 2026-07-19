@@ -6,8 +6,8 @@ from pathlib import Path
 from typing import Any
 
 from .models import ValidationResult
+from .numbering import CANONICAL_QUESTION_HEADING_RE
 
-SECTION_RE = re.compile(r"^##\s+Вопрос\s+(\d+)\.?\s*(.*)$", re.MULTILINE | re.IGNORECASE)
 HEADING_RE = re.compile(r"^#{1,6}\s+", re.MULTILINE)
 SENTENCE_RE = re.compile(r"(?<=[.!?…])\s+(?=[А-ЯЁA-Z])")
 WORD_RE = re.compile(r"[A-Za-zА-Яа-яЁё0-9]+(?:[-–][A-Za-zА-Яа-яЁё0-9]+)?")
@@ -31,6 +31,7 @@ def _strip_nonprose(text: str) -> str:
     text = re.sub(r"```.*?```|~~~.*?~~~", " ", text, flags=re.DOTALL)
     text = re.sub(r"\$\$.*?\$\$|\\\[.*?\\\]", " ", text, flags=re.DOTALL)
     text = re.sub(r"`[^`]+`", " ", text)
+    text = re.sub(r"<!--.*?-->", " ", text, flags=re.DOTALL)
     text = HEADING_RE.sub("", text)
     return text
 
@@ -39,12 +40,19 @@ def _words(text: str) -> list[str]:
     return WORD_RE.findall(text)
 
 
-def _split_sections(text: str) -> list[tuple[int, str, str]]:
-    matches = list(SECTION_RE.finditer(text))
-    sections: list[tuple[int, str, str]] = []
+def _split_sections(text: str) -> list[tuple[int, int, str, str]]:
+    matches = list(CANONICAL_QUESTION_HEADING_RE.finditer(text))
+    sections: list[tuple[int, int, str, str]] = []
     for index, match in enumerate(matches):
         end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
-        sections.append((int(match.group(1)), match.group(2).strip(), text[match.end() : end]))
+        sections.append(
+            (
+                int(match.group("lecture")),
+                int(match.group("question")),
+                match.group("title").strip(),
+                text[match.end() : end],
+            )
+        )
     return sections
 
 
@@ -68,23 +76,33 @@ def validate_coherence(
     sections = _split_sections(markdown)
 
     if not sections:
-        result.add("coherence.sections", "Не найдены заголовки вида '## Вопрос N. ...'", path=path)
+        result.add("coherence.sections", "Не найдены заголовки вида '## L.N. Название вопроса'", path=path)
     else:
-        numbers = [number for number, _, _ in sections]
+        question_numbers = [question for _, question, _, _ in sections]
         expected = list(range(1, len(sections) + 1))
-        if numbers != expected:
+        if question_numbers != expected:
             result.add(
                 "coherence.section_sequence",
-                f"Разделы должны идти последовательно: ожидалось {expected}, получено {numbers}",
+                f"Вопросы должны идти последовательно: ожидалось {expected}, получено {question_numbers}",
                 path=path,
             )
+        if config:
+            lecture_number = int(config.get("lecture_number") or 0)
+            prefixes = [lecture for lecture, _, _, _ in sections]
+            if any(prefix != lecture_number for prefix in prefixes):
+                result.add(
+                    "coherence.lecture_prefix",
+                    f"Все вопросы должны иметь префикс лекции {lecture_number}",
+                    path=path,
+                    details={"prefixes": prefixes},
+                )
 
     if config:
         questions = config.get("questions") or []
         if sections and len(sections) != len(questions):
             result.add(
                 "coherence.section_count",
-                f"Количество разделов ({len(sections)}) не совпадает с количеством вопросов ({len(questions)})",
+                f"Количество вопросов ({len(sections)}) не совпадает с конфигурацией ({len(questions)})",
                 path=path,
             )
         quality = config.get("quality") or {}
@@ -92,13 +110,13 @@ def validate_coherence(
     else:
         section_bounds = {"min": 1000, "max": 2600}
 
-    for number, title, body in sections:
+    for _, number, title, body in sections:
         section_words = _words(_strip_nonprose(body))
         count = len(section_words)
         if count < int(section_bounds.get("min", 1000)):
             result.add(
                 "coherence.section_short",
-                f"Раздел {number} слишком короткий: {count} слов",
+                f"Вопрос {number} слишком короткий: {count} слов",
                 severity="warning",
                 path=path,
                 location=f"section:{number}",
@@ -106,7 +124,7 @@ def validate_coherence(
         if count > int(section_bounds.get("max", 2600)):
             result.add(
                 "coherence.section_long",
-                f"Раздел {number} слишком длинный: {count} слов",
+                f"Вопрос {number} слишком длинный: {count} слов",
                 severity="warning",
                 path=path,
                 location=f"section:{number}",
@@ -116,7 +134,7 @@ def validate_coherence(
         if number > 1 and not BRIDGE_IN_RE.search(first_words):
             result.add(
                 "coherence.bridge_in",
-                f"В начале раздела {number} не обнаружена содержательная связь с предыдущим материалом",
+                f"В начале вопроса {number} не обнаружена содержательная связь с предыдущим материалом",
                 severity="warning",
                 path=path,
                 location=f"section:{number}",
@@ -124,15 +142,15 @@ def validate_coherence(
         if number < len(sections) and not BRIDGE_OUT_RE.search(last_words):
             result.add(
                 "coherence.bridge_out",
-                f"В конце раздела {number} не обнаружен переход к следующему вопросу",
+                f"В конце вопроса {number} не обнаружен переход к следующему вопросу",
                 severity="warning",
                 path=path,
                 location=f"section:{number}",
             )
-        if not re.search(r"^###\s+(?:Выводы|Итоги)", body, re.MULTILINE | re.IGNORECASE):
+        if not re.search(r"^###\s+\d+\.\d+\.\d+\.\s+(?:Выводы|Итоги)", body, re.MULTILINE | re.IGNORECASE):
             result.add(
                 "coherence.micro_conclusion",
-                f"Раздел {number} не содержит подраздел 'Выводы'",
+                f"Вопрос {number} не содержит пронумерованный подраздел «Выводы»",
                 path=path,
                 location=f"section:{number}",
             )

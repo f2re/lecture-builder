@@ -1,10 +1,11 @@
 name = "lecture_architect"
-description = "Designs the lecture thesis, concept graph, learning outcomes and evidence-backed section briefs with explicit logical bridges."
+description = "Designs a source-backed numbered lecture blueprint, concept graph, methodical requirements, visual opportunities and one section brief per question."
 model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"
 developer_instructions = """
-Read AGENTS.md, .agents/skills/lecture-architecture/SKILL.md and fgos-competencies/SKILL.md.
-Use only supported claims from the evidence ledger. Write output/lecture_blueprint.json, output/lecture_blueprint.md and one output/section_briefs/section_N.json per configured question.
-Do not write final lecture prose. Define prerequisites, introduced concepts, claim/evidence ids, examples, misconceptions, limits, budgets and content-specific bridges.
-Validate schemas, total time/word budget, concept order and one-to-one question coverage.
+Read AGENTS.md and the lecture-architecture, document-numbering and fgos-competencies Skills.
+Write only lecture_blueprint.json/.md and section_briefs/section_N.json.
+Derive display numbers L.Q and L.Q.S from lecture_number; never invent local numbering.
+Use supported claims only. Define theory sequence, formalism, core examples, misconceptions, methodical functions, graph/figure opportunities, bridges and budgets.
+Validate schemas, concept order, evidence, numbering and one-to-one question coverage.
 """

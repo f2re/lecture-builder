@@ -1,45 +1,36 @@
 ---
 name: coherence-editing
-description: Assemble validated section files into one logically continuous lecture draft, remove structural repetition, unify terminology and write evidence-neutral transitions without introducing new scientific claims. Use after all sections exist and before independent review.
+description: Assemble numbered section files, validated methodical inserts and visual plans into one logically continuous lecture draft without introducing scientific claims. Use after section, methodical and visual artifacts exist and before review.
 ---
 
 # Coherence editing
 
 ## Inputs
 
-- `output/lecture_blueprint.json`
-- all expected `output/sections/section_*.md`
-- `output/bibliography.json`
-- `input/lecture_config.md`
+- blueprint and all section files
+- `output/methodical_inserts.json`
+- `output/figures_index.json`, `output/chart_specs.json`, `output/image_prompts.md`
+- bibliography and config
 
 ## Output
 
-- `output/lecture_draft.md`
+Write only `output/lecture_draft.md`.
 
 ## Assembly method
 
-1. Verify exactly one non-empty section for every configured question and sort by numeric section id.
-2. Build lecture metadata, measurable objectives, plan and literature sections from validated artifacts.
-3. Write an introduction that establishes relevance, prerequisites, central problem, thesis and route through the questions. Do not summarize every section in advance.
-4. Insert sections in blueprint order.
-5. Reconcile adjacent bridges. Preserve content, but remove duplicate transition sentences and repeated definitions.
-6. Enforce the canonical glossary and notation table. At first occurrence define an abbreviation; later use the canonical form consistently.
-7. Consolidate repeated background into its earliest necessary position. Do not delete caveats, assumptions or source attributions.
-8. Write a conclusion that synthesizes the central thesis, relates results across sections and maps outcomes to competencies without adding new facts.
-9. Add control questions covering recall, interpretation and application.
+1. Verify one section per configured question and normalize headings with `document-numbering`.
+2. Build metadata, measurable objectives, literature and a question plan using bullets such as `- **17.1. Название**`; plan numbers and titles must match the config exactly.
+3. Write a distinct introduction establishing relevance, prerequisites, central problem and route.
+4. Insert sections in blueprint order and reconcile adjacent bridges.
+5. Render each required methodical insert at its approved anchor using the hidden `<!-- methodical:... -->` marker and restrained blockquote grammar. Do not place callouts back-to-back.
+6. Insert generated graph assets with Markdown image links, alt text and evidence-safe captions from the validated index. For non-chart illustrations insert the validated placeholder/caption only; generation prompts remain exclusively in `output/image_prompts.md`. Figures use global `L.N` numbering and the visible caption form `**Рисунок L.N.** Название`.
+7. Enforce glossary and notation consistency; consolidate repeated background without removing limitations or citations.
+8. Write a synthesis conclusion and control questions covering recall, interpretation and transfer.
 
 ## Edit boundary
 
-You may improve connective prose, headings, ordering inside a section and duplicate explanatory material. You may not create unsupported facts, change a formula's semantics, invent references or conceal a missing section. Material scientific changes must return to the section author/evidence stage.
+You may improve connective prose, heading normalization and duplicate explanatory material. You may not create facts, modify formula semantics, invent graph data, rewrite a mnemonic into a stronger claim or conceal a missing artifact.
 
-## Coherence checks
+## Checks
 
-- each section follows from an explicit prior result;
-- no undefined concept or abbreviation;
-- no repeated paragraph or near-identical definition;
-- examples follow the theory they apply;
-- micro-conclusions support the final synthesis;
-- introduction and conclusion have distinct functions;
-- no boilerplate transition repeated across sections.
-
-Run `python scripts/validate_pipeline.py --mode artifacts` when enough artifacts exist, and resolve coherence findings before review.
+Validate canonical `L.Q`/`L.Q.S` headings, required insert markers, figure captions, graph/source links, examples after theory, distinct introduction/conclusion, no repeated definitions and no generic bridges.

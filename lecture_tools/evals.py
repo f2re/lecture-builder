@@ -14,19 +14,37 @@ CATEGORY_PREFIXES = {
         "review.fact_check",
         "review.block",
         "formula.",
+        "charts.schematic_data",
+        "methodical.unsupported",
     ),
-    "source_fidelity": ("bibliography.", "citation.", "evidence.", "claim_marker."),
-    "logical_coherence": ("coherence.", "blueprint.section", "blueprint.concept", "brief.blueprint"),
+    "source_fidelity": (
+        "bibliography.",
+        "citation.",
+        "evidence.",
+        "claim_marker.",
+        "charts.unknown_source",
+        "charts.missing_source",
+        "methodical.missing_evidence",
+    ),
+    "logical_coherence": (
+        "coherence.",
+        "numbering.",
+        "blueprint.section",
+        "blueprint.subsection",
+        "blueprint.concept",
+        "brief.blueprint",
+    ),
     "pedagogical_accessibility": (
         "readability.",
         "brief.",
         "blueprint.competency",
         "blueprint.time",
         "review.unresolved",
+        "methodical.",
     ),
     "terminology": ("blueprint.concept", "coherence.duplicate", "config.competency"),
     "formulas_units": ("formula.", "docx.equation", "docx.omml"),
-    "formatting": ("docx.", "figures.", "schema.", "artifact."),
+    "formatting": ("docx.", "figures.", "charts.", "numbering.", "schema.", "artifact."),
 }
 
 
@@ -53,13 +71,7 @@ def evaluate_project(root: str | Path, *, strict: bool = True) -> dict[str, Any]
         penalty, relevant = _dimension_penalty(findings, CATEGORY_PREFIXES[dimension["id"]])
         score = max(0, 100 - penalty)
         weighted_total += score * float(dimension["weight"])
-        dimensions.append(
-            {
-                **dimension,
-                "score": score,
-                "findings": relevant,
-            }
-        )
+        dimensions.append({**dimension, "score": score, "findings": relevant})
 
     policy = rubric["release_policy"]
     minimum_dimension = min((item["score"] for item in dimensions), default=0)

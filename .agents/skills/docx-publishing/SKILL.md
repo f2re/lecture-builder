@@ -1,37 +1,19 @@
 ---
 name: docx-publishing
-description: Convert validated final Markdown into a ГОСТ-oriented, readable DOCX with native Word equations, right-aligned equation numbers, styles, margins, page numbering and structural smoke checks. Use only after fact check and deterministic formula numbering.
+description: Convert the fully reviewed and numbered Markdown into a ГОСТ-oriented DOCX with native equations, readable numbered headings, figures, typed callouts, margins, fonts and structural smoke checks.
 ---
 
 # DOCX publishing
 
-## Inputs
+Require a passing fact check, canonical question/subsection numbering, final formula numbers, validated figure/chart artifacts and separate image prompts.
 
-- numbered `output/lecture_final.md`
-- `output/formula_registry.json`
-- `input/lecture_config.md`
-- converter under `scripts/md2docx/`
+Run the Markdown-to-DOCX wrapper, preserving:
 
-## Output
+- question headings `L.Q` and subsection headings `L.Q.S`;
+- native OMML equations centered with right-aligned `(L.N)` numbers;
+- figure/table captions `L.N`;
+- methodical blockquotes with consistent labels and without hidden HTML markers;
+- charts/images and alt text when assets exist;
+- A4, ГОСТ-oriented margins, Times New Roman, paragraph indentation, heading hierarchy, tables and page field.
 
-- `output/lecture_final.docx`
-
-## Procedure
-
-1. Confirm strict Markdown/JSON validation has no errors.
-2. Run `bash scripts/md2docx/run_md2docx.sh output/lecture_final.md -o output/lecture_final.docx`.
-3. The converter must preserve native OMML equations and place each numbered display equation in a borderless three-column row: spacer, centered equation, right-aligned number.
-4. Apply A4 page size, configured ГОСТ-oriented margins, Times New Roman body text, consistent headings, paragraph indents, line spacing, table/caption styles and page numbering.
-5. Keep hyperlinks, lists, tables, Cyrillic symbols and mathematical indices intact.
-6. Run `python scripts/validate_docx.py output/lecture_final.docx --expect-formulas` when formulas are required.
-
-## Blocking checks
-
-- DOCX missing or empty;
-- no native OMML for a lecture requiring formulas;
-- equation numbers missing or mismatched with registry;
-- invalid page margins/font/footer;
-- unresolved image placeholders when final publication requires embedded figures;
-- Pandoc or dependency failure.
-
-Never report successful DOCX publication from file existence alone.
+Run DOCX and strict artifact validation. Never report publication success from file existence alone.

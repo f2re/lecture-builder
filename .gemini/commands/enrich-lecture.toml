@@ -1,0 +1,2 @@
+description = "Создать методические вставки для готовых разделов лекции"
+prompt = "Следуй @../../.agents/workflows/enrich-lecture.md и используй @../agents/methodical-enhancer.md."

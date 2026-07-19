@@ -77,7 +77,14 @@
       "uniqueItems": true,
       "items": {
         "type": "string",
-        "pattern": "^\\s*\\d+[.)]\\s+.+"
+        "anyOf": [
+          {
+            "pattern": "^\\s*\\d+\\.\\d+[.)]?\\s+.+"
+          },
+          {
+            "pattern": "^\\s*\\d+[.)]\\s+.+"
+          }
+        ]
       }
     },
     "language": {
@@ -157,6 +164,68 @@
       },
       "additionalProperties": false
     },
+    "methodical": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "min_inserts_per_section": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        },
+        "max_inserts_per_section": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "required_functions": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "understand",
+              "remember",
+              "apply",
+              "self_check",
+              "transfer"
+            ]
+          }
+        },
+        "max_word_share": {
+          "type": "number",
+          "minimum": 0.03,
+          "maximum": 0.3
+        }
+      },
+      "additionalProperties": false
+    },
+    "visuals": {
+      "type": "object",
+      "properties": {
+        "require_graphs": {
+          "type": "boolean"
+        },
+        "require_image_prompts": {
+          "type": "boolean"
+        },
+        "max_figures_per_section": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        },
+        "chart_output_format": {
+          "type": "string",
+          "enum": [
+            "png",
+            "svg"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
     "quality": {
       "type": "object",
       "properties": {
@@ -193,6 +262,9 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 5
+        },
+        "require_numbered_question_plan": {
+          "type": "boolean"
         }
       },
       "additionalProperties": false

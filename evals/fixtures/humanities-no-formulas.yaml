@@ -9,7 +9,18 @@ competencies:
   - "ОПК-2: анализировать исторические источники"
 audience_level: "бакалавры 2 курса"
 questions:
-  - "1. Понятие и классификация исторического источника"
-  - "2. Внешняя и внутренняя критика источника"
+  - "5.1. Понятие и классификация исторического источника"
+  - "5.2. Внешняя и внутренняя критика источника"
 language: ru
 formulas_required: false
+methodical:
+  enabled: true
+  min_inserts_per_section: 3
+  max_inserts_per_section: 5
+  required_functions: [understand, remember, self_check]
+  max_word_share: 0.15
+visuals:
+  require_graphs: false
+  require_image_prompts: true
+  max_figures_per_section: 2
+  chart_output_format: png

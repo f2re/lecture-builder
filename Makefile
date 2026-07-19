@@ -1,4 +1,4 @@
-.PHONY: install validate test quality evals docx clean
+.PHONY: install validate test numbering charts quality evals docx clean
 
 install:
 	python -m pip install -e '.[dev]'
@@ -8,6 +8,13 @@ validate:
 
 test:
 	pytest
+
+numbering:
+	python scripts/number_structure.py output/lecture_draft.md -o output/lecture_draft.md
+	python scripts/validate_numbering.py output/lecture_draft.md
+
+charts:
+	python scripts/render_charts.py --spec output/chart_specs.json --figures output/figures_index.json
 
 quality:
 	python scripts/validate_pipeline.py --mode all --strict --report output/quality_report.json

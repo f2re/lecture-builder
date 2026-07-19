@@ -1,0 +1,2 @@
+description = "Спланировать рисунки, построить проверяемые графики и сформировать отдельный файл image prompts"
+prompt = "Следуй @../../.agents/workflows/plan-visuals.md и используй @../agents/visualization-planner.md."

@@ -7,6 +7,7 @@
     "schema_version",
     "section_id",
     "number",
+    "display_number",
     "title",
     "purpose",
     "bridge_in",
@@ -14,121 +15,71 @@
     "required_claim_ids",
     "allowed_source_ids",
     "required_evidence_ids",
+    "subsections",
     "structure",
     "word_budget",
     "output_file"
   ],
   "properties": {
-    "schema_version": {
-      "const": "3.0"
+    "schema_version": {"const": "3.0"},
+    "section_id": {"type": "string", "pattern": "^q\\d+$"},
+    "number": {"type": "integer", "minimum": 1},
+    "display_number": {"type": "string", "pattern": "^\\d+\\.\\d+$"},
+    "title": {"type": "string", "minLength": 3},
+    "purpose": {"type": "string", "minLength": 10},
+    "bridge_in": {"type": "string", "minLength": 10},
+    "bridge_out": {"type": "string", "minLength": 10},
+    "required_claim_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "allowed_source_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "required_evidence_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "required_terms": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "formula_ids": {"type": "array", "items": {"type": "string", "pattern": "^eq:"}, "uniqueItems": true},
+    "examples": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "misconceptions": {"type": "array", "items": {"type": "string"}},
+    "methodical_requirements": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "enum": ["understand", "remember", "apply", "self_check", "transfer"]}
     },
-    "section_id": {
-      "type": "string",
-      "pattern": "^q\\d+$"
-    },
-    "number": {
-      "type": "integer",
-      "minimum": 1
-    },
-    "title": {
-      "type": "string",
-      "minLength": 3
-    },
-    "purpose": {
-      "type": "string",
-      "minLength": 10
-    },
-    "bridge_in": {
-      "type": "string",
-      "minLength": 10
-    },
-    "bridge_out": {
-      "type": "string",
-      "minLength": 10
-    },
-    "required_claim_ids": {
+    "visual_opportunities": {
       "type": "array",
       "items": {
-        "type": "string"
-      },
-      "uniqueItems": true
-    },
-    "allowed_source_ids": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "uniqueItems": true
-    },
-    "required_evidence_ids": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "uniqueItems": true
-    },
-    "required_terms": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "uniqueItems": true
-    },
-    "formula_ids": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "pattern": "^eq:"
-      },
-      "uniqueItems": true
-    },
-    "examples": {
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "string"
+        "type": "object",
+        "required": ["type", "purpose"],
+        "properties": {
+          "type": {"type": "string", "enum": ["diagram", "chart", "map", "comparison", "timeline", "concept-map", "scientific-illustration"]},
+          "purpose": {"type": "string", "minLength": 8}
+        },
+        "additionalProperties": true
       }
     },
-    "misconceptions": {
+    "subsections": {
       "type": "array",
+      "minItems": 2,
       "items": {
-        "type": "string"
+        "type": "object",
+        "required": ["number", "title", "purpose"],
+        "properties": {
+          "number": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+          "title": {"type": "string", "minLength": 3},
+          "purpose": {"type": "string", "minLength": 8},
+          "required_claim_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        },
+        "additionalProperties": false
       }
     },
-    "structure": {
-      "type": "array",
-      "minItems": 3,
-      "items": {
-        "type": "string"
-      }
-    },
+    "structure": {"type": "array", "minItems": 3, "items": {"type": "string"}},
     "word_budget": {
       "type": "object",
-      "required": [
-        "min",
-        "target",
-        "max"
-      ],
+      "required": ["min", "target", "max"],
       "properties": {
-        "min": {
-          "type": "integer",
-          "minimum": 300
-        },
-        "target": {
-          "type": "integer",
-          "minimum": 300
-        },
-        "max": {
-          "type": "integer",
-          "minimum": 300
-        }
+        "min": {"type": "integer", "minimum": 300},
+        "target": {"type": "integer", "minimum": 300},
+        "max": {"type": "integer", "minimum": 300}
       },
       "additionalProperties": false
     },
-    "output_file": {
-      "type": "string",
-      "pattern": "^output/sections/section_\\d+_[a-z0-9-]+\\.md$"
-    }
+    "output_file": {"type": "string", "pattern": "^output/sections/section_\\d+_[a-z0-9-]+\\.md$"}
   },
   "additionalProperties": true
 }

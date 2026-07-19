@@ -1,3 +1,1 @@
-# Compatibility workflow: section authoring
-
-Follow `@../../.agents/workflows/write-section.md` and write exactly one section.
+Canonical workflow: read root `AGENTS.md` and the matching Skills in `.agents/skills/`. The Gemini adapter must follow shared numbering, evidence, methodical and visual contracts without duplicating them.

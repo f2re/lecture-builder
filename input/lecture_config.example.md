@@ -1,8 +1,8 @@
 topic: "Тема лекции"
 discipline: "Название дисциплины"
 specialty: "Код и название направления"
-course: "2 курс, 3 семестр, Лекция 5"
-lecture_number: 5
+course: "2 курс, 3 семестр, Лекция 17"
+lecture_number: 17
 hours: 2
 fgos_version: "ФГОС 3++"
 fgos_code: "00.00.00"
@@ -12,8 +12,8 @@ audience_level: "бакалавры 2 курса; предварительные
 prior_disciplines:
   - "Предыдущая дисциплина"
 questions:
-  - "1. Первый учебный вопрос"
-  - "2. Второй учебный вопрос"
+  - "17.1. Первый учебный вопрос"
+  - "17.2. Второй учебный вопрос"
 language: ru
 formulas_required: true
 key_terms:
@@ -30,6 +30,17 @@ research:
     textbooks: 1
     peer_reviewed: 2
     normative: 0
+methodical:
+  enabled: true
+  min_inserts_per_section: 4
+  max_inserts_per_section: 5
+  required_functions: [understand, remember, apply, self_check]
+  max_word_share: 0.15
+visuals:
+  require_graphs: false
+  require_image_prompts: true
+  max_figures_per_section: 3
+  chart_output_format: png
 quality:
   word_budget_per_hour: 4000
   section_words:
@@ -37,4 +48,5 @@ quality:
     max: 2400
   require_evidence_for_claims: true
   require_fact_check_after_edit: true
+  require_numbered_question_plan: true
   max_review_cycles: 2

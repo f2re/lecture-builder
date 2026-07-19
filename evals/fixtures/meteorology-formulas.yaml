@@ -9,9 +9,20 @@ competencies:
   - "ОПК-1: применять математический аппарат в гидрометеорологии"
 audience_level: "бакалавры 3 курса"
 questions:
-  - "1. Физические основы абсолютной топографии"
-  - "2. Анализ карт абсолютной топографии"
+  - "4.1. Физические основы абсолютной топографии"
+  - "4.2. Анализ карт абсолютной топографии"
 language: ru
 formulas_required: true
 key_formulas:
   - "Гипсометрическая формула"
+methodical:
+  enabled: true
+  min_inserts_per_section: 4
+  max_inserts_per_section: 5
+  required_functions: [understand, remember, apply, self_check]
+  max_word_share: 0.15
+visuals:
+  require_graphs: true
+  require_image_prompts: true
+  max_figures_per_section: 3
+  chart_output_format: png

@@ -1,3 +1,1 @@
-# Compatibility workflow: final editing
-
-Follow `@../../.agents/skills/final-editing/SKILL.md`. After editing, require independent fact check and then `@../../.agents/workflows/publish-docx.md`.
+Canonical workflow: read root `AGENTS.md` and the matching Skills in `.agents/skills/`. The Gemini adapter must follow shared numbering, evidence, methodical and visual contracts without duplicating them.
