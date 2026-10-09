@@ -6,6 +6,8 @@ from typing import Any
 
 from .io import hash_paths, sha256_file
 from .models import ValidationResult
+from .manifest import calculate_stage_input_hash, stage_is_fresh
+from .stage_graph import REQUIRED_STAGES, STAGE_DEPENDENCIES, expected_outputs_present
 
 TAG_RE = re.compile(r"\\tag\{(?P<number>\d+\.\d+)\}")
 
@@ -144,6 +146,7 @@ def validate_manifest_state(
     manifest: Any,
     root: str | Path,
     *,
+    require_complete: bool = False,
     path: str | Path | None = None,
 ) -> ValidationResult:
     result = ValidationResult(name="manifest-freshness")
@@ -157,9 +160,25 @@ def validate_manifest_state(
     literature_hash = hash_paths(base, ["input/existing_refs.md", "input/literature"])
     if manifest.get("literature_hash") != literature_hash:
         result.add("manifest.literature_stale", "literature_hash не соответствует текущим входам", path=path)
-    for stage, record in (manifest.get("stages") or {}).items():
+    records = manifest.get("stages") or {}
+    if require_complete:
+        for stage in REQUIRED_STAGES:
+            if not isinstance(records.get(stage), dict) or records[stage].get("status") != "complete":
+                result.add("manifest.stage_incomplete", f"Required stage incomplete: {stage}", path=path)
+    for stage, record in records.items():
         if not isinstance(record, dict) or record.get("status") != "complete":
             continue
+        inputs = record.get("inputs")
+        if not isinstance(inputs, list) or any(not isinstance(item, str) for item in inputs):
+            result.add("manifest.inputs_missing", f"Stage {stage} has no declared input paths; rerun it", path=path)
+        elif record.get("input_hash") != calculate_stage_input_hash(base, inputs):
+            result.add("manifest.input_stale", f"Stage {stage} input content changed", path=path)
+        if require_complete:
+            if not expected_outputs_present(stage, record.get("outputs") or []):
+                result.add("manifest.stage_outputs", f"Stage {stage} is missing required outputs", path=path)
+            for dependency in STAGE_DEPENDENCIES.get(stage, ()):
+                if (records.get(dependency) or {}).get("status") != "complete":
+                    result.add("manifest.dependency", f"Stage {stage} has incomplete dependency {dependency}", path=path)
         output_hashes = record.get("output_hashes") or {}
         for relative in record.get("outputs") or []:
             target = base / relative

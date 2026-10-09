@@ -27,21 +27,36 @@ def _source_id(source: dict[str, Any]) -> str | None:
     return str(value) if value else None
 
 
-def _page_is_verified(source: dict[str, Any], page_spec: str) -> bool:
-    status = source.get("metadata_status")
-    if status != "verified":
+def _page_is_verified(source: dict[str, Any], page_spec: str, evidence: Any = None, claim_ids: set[str] | None = None) -> bool:
+    """A page extent or legacy verified_pages boolean is never page evidence.
+
+    Numeric citations refer to printed page labels, not physical PDF indices.
+    Exact fragments are verified separately by validate_source_provenance.
+    """
+    if not isinstance(evidence, dict) or not claim_ids:
         return False
-    verified_pages = source.get("verified_pages")
-    if verified_pages is True:
-        return True
-    page_ranges = source.get("page_ranges") or source.get("relevant_pages")
-    if isinstance(page_ranges, dict) and page_ranges:
-        return True
-    if source.get("pages_total") or source.get("page_count"):
-        first = int(re.split(r"[–-]", page_spec)[0].strip())
-        total = int(source.get("pages_total") or source.get("page_count"))
-        return 1 <= first <= total
-    return False
+    bounds = re.fullmatch(r"([0-9]+)(?:\s*[–-]\s*([0-9]+))?", page_spec.strip())
+    if not bounds:
+        return False
+    start, end = int(bounds[1]), int(bounds[2] or bounds[1])
+    if start < 1 or end < start:
+        return False
+    claims = {c.get("claim_id"): c for c in evidence.get("claims", []) if isinstance(c, dict) and isinstance(c.get("claim_id"), str)}
+    allowed = {ref for cid in claim_ids for ref in (claims.get(cid, {}).get("evidence_ids") or []) if isinstance(ref, str)}
+    pages: set[int] = set()
+    for item in evidence.get("evidence", []):
+        if not isinstance(item, dict) or item.get("evidence_id") not in allowed:
+            continue
+        if item.get("source_id") != _source_id(source) or item.get("location_status") != "verified":
+            continue
+        if not item.get("fragment_id"):
+            continue
+        label = (item.get("location") or {}).get("page_label")
+        if isinstance(label, str) and re.fullmatch(r"[0-9]+", label):
+            page = int(label)
+            if start <= page <= end:
+                pages.add(page)
+    return len(pages) == end - start + 1
 
 
 def validate_bibliography(value: Any, *, path: str | Path | None = None) -> ValidationResult:
@@ -110,6 +125,7 @@ def validate_citations(
     markdown: str,
     bibliography: Any,
     *,
+    evidence: Any = None,
     path: str | Path | None = None,
 ) -> ValidationResult:
     result = ValidationResult(name="citations")
@@ -132,7 +148,13 @@ def validate_citations(
                 location=f"offset:{match.start()}",
             )
             continue
-        if pages and not _page_is_verified(source_map[sid], pages):
+        left = markdown.rfind("\n\n", 0, match.start()) + 2
+        if left == 1:
+            left = 0
+        right = markdown.find("\n\n", match.end())
+        paragraph = markdown[left:right if right != -1 else len(markdown)]
+        adjacent_claims = {m.group("claim") for m in CLAIM_MARKER_RE.finditer(paragraph)}
+        if pages and not _page_is_verified(source_map[sid], pages, evidence, adjacent_claims):
             result.add(
                 "citation.unverified_page",
                 f"Страница '{pages}' для {sid} не подтверждена метаданными",
@@ -162,6 +184,7 @@ def validate_evidence(
     evidence_value: Any,
     bibliography: Any,
     *,
+    used_claim_ids: set[str] | None = None,
     path: str | Path | None = None,
 ) -> ValidationResult:
     result = ValidationResult(name="evidence-ledger")
@@ -239,7 +262,7 @@ def validate_evidence(
                 path=path,
                 location=f"claims/{index}",
             )
-        if status == "unsupported":
+        if status == "unsupported" and (used_claim_ids is None or str(cid) in used_claim_ids):
             result.add(
                 "claim.unsupported",
                 f"Неподтверждённый тезис {cid} блокирует публикацию",

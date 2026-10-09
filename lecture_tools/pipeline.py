@@ -20,6 +20,9 @@ from .citations import (
     validate_evidence,
 )
 from .coherence import validate_coherence
+from .provenance import validate_source_provenance
+from .review_integrity import validate_review_integrity
+from .citations import CLAIM_MARKER_RE
 from .config import load_config, validate_config
 from .docx_validation import validate_docx
 from .formulas import validate_formula_markdown
@@ -154,15 +157,10 @@ def validate_artifacts(root: str | Path, *, strict: bool = False) -> list[Valida
         results.append(parse_result)
         if value is None:
             continue
-        loaded[relative] = value
-        results.append(
-            validate_instance(
-                value,
-                load_schema(base, schema_name),
-                name=f"schema:{relative}",
-                path=path,
-            )
-        )
+        schema_result = validate_instance(value, load_schema(base, schema_name), name=f"schema:{relative}", path=path)
+        results.append(schema_result)
+        if schema_result.ok:
+            loaded[relative] = value
 
     briefs: list[tuple[Path, Any]] = []
     for path in sorted((base / "output/section_briefs").glob("section_*.json")):
@@ -170,15 +168,10 @@ def validate_artifacts(root: str | Path, *, strict: bool = False) -> list[Valida
         results.append(parse_result)
         if value is None:
             continue
-        briefs.append((path, value))
-        results.append(
-            validate_instance(
-                value,
-                load_schema(base, "section-brief"),
-                name=f"schema:{path.name}",
-                path=path,
-            )
-        )
+        schema_result = validate_instance(value, load_schema(base, "section-brief"), name=f"schema:{path.name}", path=path)
+        results.append(schema_result)
+        if schema_result.ok:
+            briefs.append((path, value))
 
     bibliography_path = base / "output/bibliography.json"
     bibliography: Any | None = loaded.get("output/bibliography.json")
@@ -188,7 +181,14 @@ def validate_artifacts(root: str | Path, *, strict: bool = False) -> list[Valida
     evidence_path = base / "output/evidence_ledger.json"
     evidence = loaded.get("output/evidence_ledger.json")
     if evidence is not None and bibliography is not None:
-        results.append(validate_evidence(evidence, bibliography, path=evidence_path))
+        used_ids = {str(cid) for _, brief in briefs if isinstance(brief, dict) for cid in (brief.get("required_claim_ids") or [])}
+        for relative in ("output/lecture_draft.md", "output/lecture_final.md"):
+            candidate = base / relative
+            if candidate.is_file():
+                used_ids.update(m.group("claim") for m in CLAIM_MARKER_RE.finditer(candidate.read_text(encoding="utf-8")))
+        results.append(validate_evidence(evidence, bibliography, used_claim_ids=used_ids, path=evidence_path))
+        if strict:
+            results.append(validate_source_provenance(base, loaded.get("output/lit/extracted_fragments.json"), evidence, bibliography))
 
     blueprint_path = base / "output/lecture_blueprint.json"
     blueprint = loaded.get("output/lecture_blueprint.json")
@@ -214,7 +214,7 @@ def validate_artifacts(root: str | Path, *, strict: bool = False) -> list[Valida
         results.append(validate_document_numbering(markdown, config, path=path))
         results.append(_attach_path(validate_formula_markdown(markdown, lecture_number or None), path))
         if bibliography is not None:
-            citation_result = validate_citations(markdown, bibliography, path=path)
+            citation_result = validate_citations(markdown, bibliography, evidence=evidence, path=path)
             if strict and relative == "output/lecture_final.md":
                 for finding in citation_result.findings:
                     if finding.code == "citation.noncanonical":
@@ -281,6 +281,10 @@ def validate_artifacts(root: str | Path, *, strict: bool = False) -> list[Valida
             )
         )
 
+    if strict:
+        final_claim_ids = required_claim_ids | {m.group("claim") for m in CLAIM_MARKER_RE.finditer(final_markdown)}
+        results.append(validate_review_integrity(reports, loaded.get("output/reviews/resolution.json"), base, strict=True, required_claim_ids=final_claim_ids))
+
     source_ids: set[str] = set()
     if bibliography is not None:
         try:
@@ -342,6 +346,7 @@ def validate_artifacts(root: str | Path, *, strict: bool = False) -> list[Valida
             validate_manifest_state(
                 manifest,
                 base,
+                require_complete=strict,
                 path=base / "output/run_manifest.json",
             )
         )

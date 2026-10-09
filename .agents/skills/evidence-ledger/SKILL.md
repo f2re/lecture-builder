@@ -1,48 +1,21 @@
 ---
 name: evidence-ledger
-description: Convert extracted source fragments into a verified bibliography, claim inventory and claim-to-evidence ledger without fabricating metadata. Use before lecture architecture and writing; do not write lecture prose or perform new web searches.
+description: Build verified bibliography and atomic claim-to-fragment evidence from extracted sources. Use for «свяжи тезисы с источниками» before architecture; do not search the web, invent metadata or write lecture prose.
 ---
 
 # Evidence ledger
 
-## Inputs
+Read extracted_fragments.json, local_index.json, search_results.json, config and source/evidence schemas. Write output/bibliography.json, evidence_ledger.json, literature_map.md and key_concepts.md.
 
-- `output/lit/extracted_fragments.json`
-- `output/lit/local_index.json`
-- `output/lit/search_results.json`
-- `input/lecture_config.md`
-- `contracts/source-record.schema.json`
-- `contracts/evidence-ledger.schema.json`
+Reconcile only observed metadata. Keep stable source_ids across reruns; unknown fields are null. Preserve fragment_id, source_id, document_hash, exact_fragment and verified locations from extraction. supports_claims must agree with claims' evidence_ids. Do not replace a source fragment with an agent's summary.
 
-## Outputs
+Build atomic definitions, formulas, quantitative facts, mechanisms, limits, examples and interpretations needed by each question. Distinguish supported, partial, unsupported and not_applicable. Partial support retains explicit limitations. A pedagogical/organizational statement that truly needs no source may be not_applicable; factual statements cannot use this label to evade verification.
 
-- `output/bibliography.json`
-- `output/evidence_ledger.json`
-- `output/literature_map.md`
-- `output/key_concepts.md`
-
-## Method
-
-1. Group fragments by source and reconcile metadata only from verified provenance.
-2. Assign stable `source_id` values. Preserve ids across reruns when the canonical source is unchanged.
-3. Classify source category and authority using observable evidence, not reputation assumptions.
-4. Build atomic claims for definitions, formulas, quantitative facts, mechanisms, limitations and interpretations required by the lecture questions.
-5. Link every claim to exact fragments. Mark status:
-   - `supported`: sufficient verified evidence;
-   - `partial`: evidence supports only part or has material limitations;
-   - `unsupported`: no adequate evidence;
-   - `not_applicable`: pedagogical or organizational statement requiring no source.
-6. Record assumptions and confidence. Conflicting sources remain visible; choose canonical terminology only with a stated rationale.
-7. Build a question-to-source map and glossary from the highest-quality supporting evidence.
-
-## Metadata rule
-
-Unknown values are `null`. Page citations require page-aware extraction and `location_status: verified`. A title or year inferred from a filename remains unverified and cannot support a formal page citation.
+Conflicting evidence stays visible. Explain the terminology choice and each source's scope; do not erase disagreement. A citation identifier alone never proves the claim's meaning.
 
 ## Coverage gate
+Each required question needs grounds for its central definition, mechanism and required formula/example. Unsupported research hypotheses may remain in the ledger, but not in the brief or published text. Missing grounds create an evidence_request, not a claim from model memory.
 
-Every configured question must have evidence for its core definition, central mechanism and required formula/example where applicable. Missing coverage is a blocking gap, not an invitation to synthesize from model memory.
+Validate schema, unique IDs, source/fragment cross-references, nonempty exact excerpts and bidirectional claim links. Invoke source provenance validation. Numeric citations require printed page_label linked to the adjacent claim; pages_total, page_ranges and verified_pages do not verify locations.
 
-## Verification
-
-Validate both JSON files against their schemas. Run evidence cross-reference checks: unique ids, known sources, non-empty fragments, no `supported` claim without evidence and no `unsupported` claim entering section briefs.
+Apply .agents/references/integrity-contract.md and .agents/references/prompt-templates.md.

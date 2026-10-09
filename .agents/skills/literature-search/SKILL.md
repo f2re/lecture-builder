@@ -1,57 +1,25 @@
 ---
 name: literature-search
-description: Discover academic, educational, normative and official sources for every configured lecture question, including local literature indexing and Russian/English query design. Use before source extraction; do not synthesize claims or fabricate bibliographic metadata.
+description: Discover academic, educational, normative and official sources for every configured lecture question, including local literature indexing and Russian/English query design. Use for «найди источники» before extraction; do not write lecture prose or fabricate metadata.
 ---
 
 # Literature search
 
-## Inputs
-
-- `input/lecture_config.md`
-- optional `input/existing_refs.md`
-- optional files under `input/literature/`
-- `contracts/source-record.schema.json`
-
-## Outputs
-
-- `output/lit/local_index.json`
-- `output/lit/search_results.json`
-- `output/lit/search_log.md`
-
-Write incrementally so partial progress survives tool or network failures.
+## Inputs and outputs
+Read input/lecture_config.md, optional input/existing_refs.md, input/literature/ and contracts/source-record.schema.json. Write output/lit/local_index.json, search_results.json and search_log.md incrementally.
 
 ## Procedure
+1. Validate configuration and enumerate every question; never stop at the first four.
+2. Index local files first: path, media type, actual content hash, extractability and only observed metadata.
+3. For each question identify missing definitions, mechanisms, derivations, limitations, examples, data and disagreements. Bind each query to question_id, gap_id, purpose and language.
+4. Use accepted RU/EN terminology and variants. Choose source type by the claim: textbook/monograph for a foundational derivation; primary peer-reviewed work for a research result; official document for regulation; dataset and methodology for observations. Do not score solely by domain reputation.
+5. Deduplicate by canonical URL, DOI and normalized title. Record query, timestamp, result rank and discovery method.
+6. Mark metadata verified, partial or unverified based on observed provenance. A search snippet is not a read source and does not verify authorship, year or pages.
 
-1. Validate config and enumerate every question. Do not limit the search to the first four questions.
-2. Index local files first. Record path, media type, content hash, extractability and only metadata actually observed in the document or file system.
-3. Build a compact search matrix for each question in the configured languages. Use term variants, accepted English terminology and discipline context.
-4. Prefer source classes in this order:
-   - normative and official scientific organizations;
-   - peer-reviewed journals and proceedings;
-   - current university textbooks and monographs;
-   - institutional repositories;
-   - reputable datasets and technical documentation;
-   - other web sources only when primary material is unavailable.
-5. Deduplicate by canonical URL, DOI and normalized title.
-6. Record search provenance: query, question, timestamp, result rank and discovery method.
-7. Mark metadata as `verified`, `partial` or `unverified`. A snippet is not proof of authorship, year or page count.
+## Budgets and failure
+Respect research.max_queries_per_question, max_results_per_query and extraction limits. Search remaining gaps, not arbitrary publication counts. Record unmet configured source categories. Missing network or inaccessible sources must be explicit; keep verified partial progress. Do not invent sources to satisfy a quota.
 
-## Query discipline
+## Gate
+Validate schemas, uniqueness, question coverage and provenance. Gaps may remain in discovery but cannot become unsupported lecture claims. Do not format the bibliography, synthesize definitions or read binary documents through a text-only tool.
 
-Respect `research.max_queries_per_question` and `max_results_per_query`. These are cost controls, not permission to omit questions. When coverage is insufficient, record the gap rather than generating synthetic sources.
-
-## Minimum quality
-
-For each question, aim for the configured minimum textbooks, peer-reviewed sources and normative documents. Flag any unmet category explicitly in the log.
-
-## Prohibitions
-
-- no invented DOI, URL, author, title, year or publisher;
-- no source scoring based solely on domain reputation;
-- no bibliography formatting at this stage;
-- no claims, definitions or lecture prose;
-- no reading binary documents through text-only tools that cannot preserve pages.
-
-## Verification
-
-Validate JSON, uniqueness, question coverage and source provenance. A successful degraded run may contain gaps, but the gaps must be explicit and must prevent unsupported downstream claims.
+Apply .agents/references/integrity-contract.md and the search template in .agents/references/prompt-templates.md.

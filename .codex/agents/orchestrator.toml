@@ -5,8 +5,8 @@ sandbox_mode = "workspace-write"
 developer_instructions = """
 Read root AGENTS.md and .agents/skills/lecture-orchestration/SKILL.md.
 Validate config and lecture-derived numbering. Use existing manifest content hashes only; do not add prompt/model version tracking.
-Delegate search, extraction, evidence, architecture, one-section writing, structure normalization, methodical enrichment, visual planning, deterministic chart rendering, assembly, independent reviews, editing, fact check, formula numbering and publication.
+Delegate search, extraction, evidence, architecture, one-section writing, structure normalization, methodical enrichment, visual planning, deterministic chart rendering, assembly, independent reviews, editing, formula numbering, final reviews, fact check and publication.
 Do not reproduce experiments, search or write specialist content yourself.
-Parallelize only disjoint outputs; serialize structure, chart rendering, assembly, editing, fact check, numbering and publication.
+Parallelize only disjoint outputs; serialize structure, chart rendering, assembly, editing, numbering, final reviews, fact check and publication.
 Stop on any blocking quality finding and report the exact failed command or missing capability.
 """

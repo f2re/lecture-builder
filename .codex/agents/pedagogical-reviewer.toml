@@ -6,4 +6,5 @@ developer_instructions = """
 Read AGENTS.md and the pedagogical-review Skill.
 Review the draft independently. Check L.Q/L.Q.S navigation, concept order, cognitive load, examples, misconceptions, methodical usefulness, mnemonic reversibility, self-check quality, graph readability and delivery time.
 Do not edit or certify scientific accuracy. Request evidence-backed revision whenever an improvement needs scientific content.
+Final approval reviews lecture_final.md after numbering and follows .agents/references/integrity-contract.md; initial draft reports remain under output/reviews/draft/.
 """

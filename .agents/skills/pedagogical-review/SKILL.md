@@ -1,21 +1,19 @@
 ---
 name: pedagogical-review
-description: Perform an independent read-only pedagogical review for audience fit, numbered concept progression, methodical inserts, examples, graphs, competencies, readability and assessment. Use after assembly; never edit or scientifically certify the lecture.
+description: Independently review audience fit, learning progression, examples, assessments, timing and visual usefulness. Use for «проверь понятность лекции»; do not edit the lecture or certify its scientific accuracy.
 ---
 
 # Pedagogical review
 
-Review the draft, blueprint, methodical insert artifact, figures/chart specs and config.
+Read target Markdown, config, blueprint, methodical inserts and figures/chart specs. Use a read-only context independent of authors and the scientific reviewer. Initial reports belong under output/reviews/draft/pedagogical.json; repeat review after editing and numbering and save final approval at output/reviews/pedagogical.json for lecture_final.md.
 
-Check objectives and competencies; prerequisite order; cognitive load; explanatory quality; content-specific bridges; paragraph focus; theory-to-example sequence; misconception handling; control questions; delivery-time fit; and canonical `L.Q`/`L.Q.S` navigation.
+Check every intended learning outcome against the explanation, practice, assessment and answer criteria. Determine whether a student with the stated prerequisites can solve the control task using the lecture. Check concept order, cognitive load, paragraph focus, motivated formalism, theory-to-example progression, misconception handling, micro-conclusions and content-specific bridges. Separate manuscript length from actual classroom timing.
 
-Evaluate methodical inserts separately:
+Review thematic examples for added value rather than duplication. Mnemonics must be accurate, memorable and reversible to the concept. Formula-reading aids must support interpretation without replacing definitions or hiding conditions. Common-error callouts identify realistic learner mistakes; self-checks require retrieval or transfer and usable teacher criteria. Respect configured density and avoid fragmented prose.
 
-- thematic examples must illuminate rather than duplicate the main example;
-- mnemonics must be accurate, memorable and reversible to the correct concept;
-- formula-reading boxes must aid interpretation without oversimplification;
-- common-error boxes must name a realistic learner error;
-- self-checks must require retrieval or transfer;
-- callout density must not fragment the lecture.
+Check visual purpose, readability, labels/units, captions and integration with the surrounding explanation. Request evidence-backed specialist revision whenever a pedagogical improvement needs new scientific content. Do not treat stylistic preference or insert counts as measured learning effectiveness.
 
-Evaluate graphs and figures for cognitive value, captions, readable labels, axis units and alignment with the surrounding explanation. Request evidence-backed revision whenever a pedagogical improvement needs new scientific content.
+## Required result
+Return review-report JSON with reviewer_id, runtime-supplied artifact hashes, mandatory pedagogical REQUIRED_CHECKS, findings and explicit not-applicable reasons. Each concrete finding has severity, location, category and required_action. Final approval must match the numbered final text and current supporting artifacts. Do not self-edit, waive core checks or accept the editor's own approval of a correction.
+
+Apply .agents/references/integrity-contract.md and .agents/references/prompt-templates.md.

@@ -5,7 +5,7 @@
   "type": "array",
   "items": {
     "type": "object",
-    "required": ["fragment_id", "source_id", "question_ids", "exact_fragment", "document_hash", "location", "location_status"],
+    "required": ["fragment_id", "source_id", "question_ids", "exact_fragment", "document_hash", "location", "location_status", "document_path", "text_path", "text_hash"],
     "properties": {
       "fragment_id": {"type": "string", "pattern": "^frag_[A-Za-z0-9_.:-]+$"},
       "source_id": {"type": "string", "pattern": "^src_[A-Za-z0-9_.-]+$"},
@@ -31,7 +31,10 @@
       "has_formula": {"type": "boolean"},
       "has_definition": {"type": "boolean"},
       "extraction_method": {"type": "string"},
-      "extraction_notes": {"type": "string"}
+      "extraction_notes": {"type": "string"},
+      "document_path": {"type": "string", "minLength": 1},
+      "text_path": {"type": "string", "minLength": 1},
+      "text_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
     },
     "additionalProperties": true
   }

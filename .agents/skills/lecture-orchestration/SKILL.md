@@ -1,49 +1,18 @@
 ---
 name: lecture-orchestration
-description: Coordinate, resume or diagnose the complete Lecture Builder pipeline across research, architecture, numbered section writing, methodical enrichment, visual planning, review, editing, formula numbering and DOCX publication. Use for full builds and interrupted runs; do not author specialist content directly.
+description: Coordinate, resume or diagnose the complete Lecture Builder pipeline with verified sources, numbered sections, independent final reviews and bounded specialist repairs. Use for «собери лекцию», «продолжи сборку» or «проверь этапы»; do not author or self-review specialist content.
 ---
 
 # Lecture orchestration
 
-## Role boundary
+Read AGENTS.md, .agents/workflows/build-lecture.md and .agents/references/integrity-contract.md. The executable graph and output contract are in lecture_tools.stage_graph. Use scripts/manifest.py next; revalidate both current content and required semantic checks before reuse.
 
-You are the pipeline manager. You may inspect inputs, outputs, hashes, schemas and validation reports; delegate specialist work; update `output/run_manifest.json`; and stop on failed quality gates. You must not search literature, invent source records, write lecture prose, review your own prose or change scientific formulas.
+You coordinate dependencies, budgets, task packets and status. Specialists search, extract, curate evidence, design, write, enrich, visualize, review and publish. Do not fill missing scientific content yourself. No experimental replication and no prompt/model version tracking.
 
-The pipeline verifies lecture theory against sources and the local source corpus. It does not reproduce or replicate scientific experiments; experimental reproduction is outside the lecture-building scope.
+Dispatch one section per validated brief with a small evidence-scoped context packet. Use independent read-only contexts for scientific, pedagogical and final fact checks. Allow parallelism only for disjoint outputs; serialize manifest changes and document assembly.
 
-## Canonical stage graph
+Preserve immutable handoffs: visual plans under output/plans; draft reviews under output/reviews/draft; editor output lecture_edited.md; numbering produces lecture_final.md; final reports certify that numbered file; publication never edits it.
 
-1. `config` — validate `input/lecture_config.md`, including lecture-derived question numbering.
-2. `research-search` — discover local and web sources for every question.
-3. `research-extract` — extract exact fragments and coordinates.
-4. `evidence` — build bibliography, claims and evidence ledger.
-5. `architecture` — create blueprint and briefs with `L.Q` and `L.Q.S` numbers.
-6. `sections` — run one author per brief; outputs are disjoint and may run in parallel.
-7. `number-structure` — normalize question/subsection headings deterministically.
-8. `methodical-enrichment` and `visual-planning` — may run in parallel; write disjoint JSON/Markdown artifacts.
-9. `render-charts` — deterministically create required graph assets from validated chart specs.
-10. `assembly` — integrate sections, typed methodical inserts, figure captions and placeholders into one draft.
-11. `review-scientific` and `review-pedagogical` — independent read-only reviews; may run in parallel.
-12. `edit` — apply reviewed corrections while preserving numbers and hidden insert markers.
-13. `fact-check` — independently verify theory, formulas, examples, inserts, graph descriptions and captions against sources.
-14. `number-formulas` — assign `lecture_number.ordinal` once across the lecture.
-15. `publish-docx` — convert and validate DOCX.
-16. `quality-gate` — strict validation of all artifacts.
+A reviewer returns structured findings with category. Run scripts/repair_plan.py --phase draft --cycle N, dispatch only status=ready, route to the owner and invalidate restart_stage/descendants after changes. A blocked plan or exhausted max_review_cycles stops dispatch. An editor cannot approve their own correction. Recheck changed material independently.
 
-## Required content package
-
-A completed lecture contains coherent theory, evidence-backed formulas, thematic examples, typed pedagogical inserts, planned graphs/figures with captions, a separate image prompt file, source-backed fact check, local-source provenance, structure/section artifacts, Markdown and DOCX.
-
-## Resume policy
-
-A stage is reusable only when its stored input hash matches, declared outputs exist and match their output hashes, and current deterministic validation passes. Do not add model or prompt-version tracking to the manifest; use the existing content-hash policy only.
-
-## Parallelism
-
-Safe: independent search queries, different source extraction jobs, disjoint section files, methodical enrichment versus visual planning, and the two reviews.
-
-Sequential: manifest writes, blueprint approval, structure numbering, chart rendering, assembly, editing, fact check, formula numbering and publication.
-
-## Blocking conditions
-
-Stop on invalid schemas, missing evidence, noncanonical numbering, missing required methodical functions, unsupported graph data, unresolved source/formula/figure references, critical review findings, failed fact check, DOCX defects or strict-gate errors.
+Completion requires all mandatory stages, valid output schemas and cross-references, source provenance, supported published claims, current complete final reviews, correct DOCX and zero strict gate errors. Do not mark missing capabilities or skipped checks as passed. Save useful partial work and report precise blockers.

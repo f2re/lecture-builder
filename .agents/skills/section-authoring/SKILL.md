@@ -1,42 +1,19 @@
 ---
 name: section-authoring
-description: Write exactly one numbered Russian university lecture question from a validated brief and verified evidence, with theory, definitions, formulas, examples, limitations, misconceptions, logical bridges and a micro-conclusion. Use after architecture; never assemble or edit other sections.
+description: Write exactly one numbered Russian lecture section from a validated brief and scoped evidence, including theory, formulas, example, limitations and bridges. Use for «напиши второй вопрос»; do not assemble or edit other sections.
 ---
 
 # Section authoring
 
-## Inputs and output
+Read the assigned brief and section evidence packet, relevant blueprint/terminology and configuration. Write only output/sections/section_N_slug.md. Use the brief's exact headings: for lecture 17, question 1 is `## 17.1. ...`, then `### 17.1.1. ...`. Technical paths keep local ordinal section_1_... . Never invent a separate numbering scheme.
 
-Read one section brief, the blueprint, evidence ledger, bibliography, key concepts and config. Write exactly one `output/sections/section_{N}_{slug}.md`.
+Connect to the prior result, state the local problem, define terms and explain the mechanism before introducing formalism. After each formula explain new symbols, units, assumptions and limits. Work through the core example's reasoning, calculation and interpretation. Correct the planned misconception, write the numbered micro-conclusion and finish with the planned specific bridge.
 
-## Heading contract
+Use stable `\label{eq:...}` and `@eq:...` references. Do not assign final formula numbers. Every substantive fact, definition, quantitative, causal or formula statement needs an adjacent `<!-- claim:claim_id -->` and the appropriate source citation. Distinguish quotation, paraphrase, assumption, approximation and a clearly labelled hypothetical example. Do not strengthen a conditional conclusion.
 
-For lecture 17 and the first question:
+Author the essential scientific example, not extra mnemonic or self-check boxes; methodical-enrichment owns these. Do not generate image prompts. A new required scientific ground is returned as evidence_request, never filled from memory.
 
-```markdown
-## 17.1. Название вопроса
+## Completion
+Check the assigned path, word budget, all required claims, citation scope, signs, indices, symbol/units, example arithmetic, limitations and both bridges. Finish heading normalization before marking sections complete. number-structure subsequently checks the frozen sections and saves a report; it does not rewrite them.
 
-### 17.1.1. Первый подраздел
-
-### 17.1.2. Второй подраздел
-```
-
-Use only the display numbers and subsection plan from the brief. Do not create local `1.1` numbering. Technical file names still use ordinal `section_1_...`.
-
-## Required reasoning sequence
-
-Connect to the previous result; state the local problem; define terms; explain theory/mechanism; introduce formulae after motivation; state units, assumptions and limits; work through the core evidence-backed example; correct the planned misconception; give a numbered micro-conclusion subsection; end with the planned bridge.
-
-Use stable equation labels `\label{eq:...}` and `@eq:...` references. Never assign final formula numbers.
-
-## Division of labor
-
-The section author writes the essential scientific example needed to explain the theory. It does not add mnemonic boxes, self-check callouts or extra thematic mini-cases; those are designed by `methodical-enrichment` after all sections exist. It may identify a useful graph in prose but does not write image-generation prompts.
-
-## Source discipline
-
-Every factual, definitional, quantitative, causal and formula claim resolves to supported evidence and receives an adjacent `<!-- claim:claim_id -->` marker. Use stable source citations. Distinguish quotation, paraphrase, assumption, approximation and hypothetical worked example.
-
-## Verification
-
-Check output path, canonical headings, word budget, claims, citations, formula labels/symbols/units, core example, misconception, micro-conclusion and both bridges.
+Apply .agents/references/integrity-contract.md and .agents/references/prompt-templates.md.

@@ -10,6 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from lecture_tools.stage_graph import next_stages
+
 from lecture_tools.manifest import (  # noqa: E402
     load_or_create_manifest,
     mark_stage,
@@ -33,16 +35,23 @@ def main() -> int:
 
     mark = sub.add_parser("mark")
     mark.add_argument("stage")
-    mark.add_argument("--status", choices=("complete", "failed", "blocked", "in_progress"), required=True)
+    mark.add_argument("--status", choices=("complete", "failed", "blocked", "in_progress", "stale"), required=True)
     mark.add_argument("--inputs", nargs="+", required=True)
     mark.add_argument("--outputs", nargs="*", default=[])
     mark.add_argument("--notes", nargs="*", default=[])
     mark.add_argument("--platform", default="codex")
 
+    next_parser = sub.add_parser("next")
+    next_parser.add_argument("--platform", default="codex")
     args = parser.parse_args()
     root = ROOT
     manifest = load_or_create_manifest(root, platform=args.platform)
 
+    if args.command == "next":
+        ready = next_stages(root, manifest)
+        save_manifest(root, manifest)
+        print(json.dumps({"ready_stages": ready}, ensure_ascii=False))
+        return 0
     if args.command == "init":
         save_manifest(root, manifest)
         print(json.dumps(manifest, ensure_ascii=False, indent=2))
