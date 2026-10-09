@@ -1,36 +1,21 @@
 ---
 name: coherence-editing
-description: Assemble numbered section files, validated methodical inserts and visual plans into one logically continuous lecture draft without introducing scientific claims. Use after section, methodical and visual artifacts exist and before review.
+description: Assemble numbered sections, verified methodical inserts and rendered visuals into one coherent lecture draft. Use for «собери разделы в лекцию» before review; do not introduce scientific claims or overwrite section files.
 ---
 
 # Coherence editing
 
-## Inputs
+Read blueprint, all completed sections, methodical_inserts.json, rendered figures_index.json/chart_specs.json, bibliography and configuration. Write only output/lecture_draft.md.
 
-- blueprint and all section files
-- `output/methodical_inserts.json`
-- `output/figures_index.json`, `output/chart_specs.json`, `output/image_prompts.md`
-- bibliography and config
+Verify exactly one section per configured question. Use already normalized L.Q/L.Q.S headings without rewriting the frozen section files. Build metadata, observable objectives, literature and a bullet question plan with numbers/titles exactly matching config.
 
-## Output
+Write a distinct introduction connecting prerequisites, relevance, central problem and route. Insert sections in blueprint order; reconcile their content-specific bridges. Consolidate repeated background without losing definitions, assumptions, limitations, citations or claim markers. Do not replace a specific transition with generic linking prose.
 
-Write only `output/lecture_draft.md`.
+Render approved inserts at their anchors as restrained blockquotes with hidden methodical markers. No adjacent callouts. Insert rendered chart assets and evidence-consistent captions from the validated index. Use global `Рисунок L.N` captions. Non-chart placeholders follow config and index; image prompts remain exclusively in output/image_prompts.md.
 
-## Assembly method
+Finish with synthesis and control questions covering recall, interpretation and transfer. Align questions and teacher answer criteria with the designed learning outcomes. Do not invent new scientific content to make the conclusion or transition smoother; request evidence-backed revision instead.
 
-1. Verify one section per configured question and normalize headings with `document-numbering`.
-2. Build metadata, measurable objectives, literature and a question plan using bullets such as `- **17.1. Название**`; plan numbers and titles must match the config exactly.
-3. Write a distinct introduction establishing relevance, prerequisites, central problem and route.
-4. Insert sections in blueprint order and reconcile adjacent bridges.
-5. Render each required methodical insert at its approved anchor using the hidden `<!-- methodical:... -->` marker and restrained blockquote grammar. Do not place callouts back-to-back.
-6. Insert generated graph assets with Markdown image links, alt text and evidence-safe captions from the validated index. For non-chart illustrations insert the validated placeholder/caption only; generation prompts remain exclusively in `output/image_prompts.md`. Figures use global `L.N` numbering and the visible caption form `**Рисунок L.N.** Название`.
-7. Enforce glossary and notation consistency; consolidate repeated background without removing limitations or citations.
-8. Write a synthesis conclusion and control questions covering recall, interpretation and transfer.
+## Gate
+Check required sections, headings, claims, citations, insert markers, visuals, glossary/notation, examples after theory and distinct introduction/conclusion. Compare source sections to assembly for unintended omissions. Neither fluent prose nor successful file creation counts as scientific approval.
 
-## Edit boundary
-
-You may improve connective prose, heading normalization and duplicate explanatory material. You may not create facts, modify formula semantics, invent graph data, rewrite a mnemonic into a stronger claim or conceal a missing artifact.
-
-## Checks
-
-Validate canonical `L.Q`/`L.Q.S` headings, required insert markers, figure captions, graph/source links, examples after theory, distinct introduction/conclusion, no repeated definitions and no generic bridges.
+Apply .agents/references/integrity-contract.md and .agents/references/prompt-templates.md.

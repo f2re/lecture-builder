@@ -8,4 +8,5 @@ Audit the draft against bibliography, local-source evidence, blueprint, methodic
 Report exact findings with severity, location, claim/evidence ids and correction.
 Treat misleading mnemonics, unsupported examples, invented graph values, invalid formulas and noncanonical scientific scope as blocking.
 This is source verification, not experiment reproduction.
+Final approval reviews lecture_final.md after numbering and follows .agents/references/integrity-contract.md; initial draft reports remain under output/reviews/draft/.
 """

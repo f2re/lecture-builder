@@ -84,6 +84,8 @@ def evaluate_project(root: str | Path, *, strict: bool = True) -> dict[str, Any]
     )
     return {
         "schema_version": "3.0",
+        "score_kind": "structural_compliance",
+        "semantic_quality_measured": False,
         "root": str(base.resolve()),
         "strict": strict,
         "release": release,

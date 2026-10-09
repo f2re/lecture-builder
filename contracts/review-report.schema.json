@@ -3,118 +3,41 @@
   "$id": "https://github.com/f2re/lecture-builder/contracts/review-report.schema.json",
   "title": "Machine-readable lecture review",
   "type": "object",
-  "required": [
-    "schema_version",
-    "review_type",
-    "status",
-    "score",
-    "findings",
-    "checks"
-  ],
+  "required": ["schema_version", "review_type", "status", "score", "findings", "checks", "reviewer_id", "reviewed_artifacts"],
   "properties": {
-    "schema_version": {
-      "const": "3.0"
-    },
-    "review_type": {
-      "type": "string",
-      "enum": [
-        "scientific",
-        "pedagogical",
-        "coherence",
-        "fact_check"
-      ]
-    },
-    "status": {
-      "type": "string",
-      "enum": [
-        "pass",
-        "revise",
-        "block"
-      ]
-    },
-    "score": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 100
-    },
+    "schema_version": {"const": "3.0"},
+    "review_type": {"type": "string", "enum": ["scientific", "pedagogical", "coherence", "fact_check"]},
+    "status": {"type": "string", "enum": ["pass", "revise", "block"]},
+    "score": {"type": "integer", "minimum": 0, "maximum": 100},
     "findings": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": [
-          "finding_id",
-          "severity",
-          "section",
-          "problem",
-          "required_action"
-        ],
+        "required": ["finding_id", "severity", "section", "problem", "required_action"],
         "properties": {
-          "finding_id": {
-            "type": "string"
-          },
-          "severity": {
-            "type": "string",
-            "enum": [
-              "critical",
-              "major",
-              "minor",
-              "note"
-            ]
-          },
-          "section": {
-            "type": "string"
-          },
-          "fragment": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "problem": {
-            "type": "string",
-            "minLength": 5
-          },
-          "rule": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "claim_ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "evidence_ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "required_action": {
-            "type": "string",
-            "minLength": 5
-          }
+          "finding_id": {"type": "string"},
+          "severity": {"type": "string", "enum": ["critical", "major", "minor", "note"]},
+          "section": {"type": "string"},
+          "fragment": {"type": ["string", "null"]},
+          "problem": {"type": "string", "minLength": 5},
+          "rule": {"type": ["string", "null"]},
+          "claim_ids": {"type": "array", "items": {"type": "string"}},
+          "evidence_ids": {"type": "array", "items": {"type": "string"}},
+          "required_action": {"type": "string", "minLength": 5}
         },
         "additionalProperties": true
       }
     },
-    "checks": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "string",
-        "enum": [
-          "pass",
-          "fail",
-          "warning",
-          "not_applicable"
-        ]
-      }
-    },
-    "summary": {
-      "type": "string"
-    }
+    "checks": {"type": "object", "additionalProperties": {"type": "string", "enum": ["pass", "fail", "warning", "not_applicable"]}, "minProperties": 1},
+    "summary": {"type": "string"},
+    "reviewer_id": {"type": "string", "minLength": 1},
+    "reviewed_artifacts": {"type": "object", "minProperties": 3, "additionalProperties": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}},
+    "not_applicable_reasons": {"type": "object", "additionalProperties": {"type": "string", "minLength": 5}},
+    "coverage": {"type": "object", "properties": {"claim_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}}, "required": ["claim_ids"]}
   },
-  "additionalProperties": true
+  "additionalProperties": true,
+  "allOf": [
+    {"if": {"properties": {"review_type": {"const": "fact_check"}}, "required": ["review_type"]}, "then": {"required": ["coverage"]}},
+    {"if": {"properties": {"status": {"enum": ["revise", "block"]}}, "required": ["status"]}, "then": {"properties": {"findings": {"minItems": 1}}}}
+  ]
 }

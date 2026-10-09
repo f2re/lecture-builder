@@ -1,27 +1,19 @@
 ---
 name: fgos-competencies
-description: Translate configured ФГОС competency codes and indicators into measurable lecture objectives, content coverage and assessment evidence without inventing official wording. Use during architecture and pedagogical review.
+description: Map supplied ФГОС competency codes and indicators to measurable outcomes, content, practice and assessment evidence. Use for «согласуй лекцию с компетенциями» during architecture and pedagogical review; never invent official regulatory wording.
 ---
 
 # ФГОС competency alignment
 
-## Inputs
+Read the user's configured competency codes, descriptions and topic indicators separately. Treat supplied wording as project data, not automatically verified current regulation.
 
-Use competency codes and wording supplied by the user/configuration. Treat them as project data, not as automatically verified current regulation text.
+Derive observable outcomes appropriate to the audience: explain, distinguish, calculate, interpret, apply, justify or diagnose. For each required outcome map one or more lecture sections, explanations, examples, practice tasks, assessment prompts and criteria for a correct answer. Produce a coverage matrix with actual locations and explicit gaps.
 
-## Method
+Check prerequisites and avoid assigning unsupported professional actions. Distinguish introduction/exposure, practice and demonstrated attainment. A lecture alone cannot establish full professional competency mastery. Do not count a code's mere appearance in the text as coverage.
 
-1. Parse each code, description and topic indicator separately.
-2. Derive measurable outcomes using observable verbs appropriate to the audience: explain, distinguish, calculate, interpret, apply, justify or diagnose.
-3. Map every outcome to one or more lecture sections, examples and control questions.
-4. Distinguish exposure from demonstrated attainment. A lecture may introduce a competency component but cannot by itself prove full mastery.
-5. Check prerequisite knowledge and avoid assigning professional actions not supported by the material.
-6. Produce a coverage matrix with evidence locations and gaps.
+Never reconstruct or update official ФГОС wording from model memory. When legal currency matters, obtain and date a verified official source. Otherwise preserve the configured text and mark it user-provided. Do not substitute a different competency code silently.
 
-## Integrity rule
+## Gate
+Every required code/indicator has content coverage and a suitable assessment with answer criteria, or is explicitly not covered with a concrete remediation. Scientific additions needed for a task go through evidence_request and the responsible specialist.
 
-Do not reconstruct or update official ФГОС text from memory. When legal/regulatory currency matters, use a verified official source and date it. Preserve the configured wording if no official verification is available and label it user-provided.
-
-## Review gate
-
-Every competency code must have a traceable content location and at least one suitable assessment prompt, or be marked not covered with a concrete remediation.
+Apply .agents/references/integrity-contract.md and .agents/references/prompt-templates.md.

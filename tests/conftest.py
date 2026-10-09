@@ -45,10 +45,11 @@ def evidence() -> dict[str, Any]:
         "evidence": [
             {
                 "evidence_id": "ev_q1_01",
+                "fragment_id": "frag_q1_01",
                 "source_id": "src_001",
                 "document_hash": "sha256:" + "a" * 64,
                 "exact_fragment": "Толщина изобарического слоя пропорциональна его средней виртуальной температуре.",
-                "location": {"page": 45, "section": "2.1", "paragraph": 3},
+                "location": {"page": 45, "page_label": "45", "section": "2.1", "paragraph": 3},
                 "location_status": "verified",
                 "supports_claims": ["claim_q1_01"],
             }

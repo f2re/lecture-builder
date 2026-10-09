@@ -1,36 +1,19 @@
 ---
 name: gost-citation
-description: Format verified bibliography metadata for Russian academic lecture materials and enforce stable source-id citations without inventing missing fields or page locations. Use during evidence curation, writing and publication.
+description: Maintain stable source-id citations and format verified metadata for Russian academic materials without inventing fields or page locations. Use for «проверь ссылки и библиографию» during evidence curation, writing and publication.
 ---
 
 # ГОСТ-oriented citation handling
 
-## Canonical in-text form
+Use `[@src_001]` for a source-level citation. Use `[@src_001, с. 45]` or a numeric range only when evidence for the adjacent claim contains the corresponding verified printed page_label. The physical PDF index, pages_total, page_ranges and a verified_pages boolean are insufficient. Every page in a cited range must be covered; do not add an unverified end page.
 
-Use machine-resolvable source identifiers:
+Keep source IDs canonical internally. Human-readable output may use a separately configured and actually executed bibliography renderer; do not imply that the current converter automatically supplies citeproc/CSL formatting when it has not done so. Specify the institutional formatting profile rather than promise universal ГОСТ conformity.
 
-- `[@src_001]` for a source-level citation;
-- `[@src_001, с. 45]` or `[@src_001, с. 45–47]` only when the page location is verified.
+Format only observed fields. Unknown author, publisher, year, volume, issue, page extent, DOI or access date is null and omitted without inventing completeness. Preserve original title language and identifiers. Online access dates refer to actual known access, not an arbitrary current date.
 
-Human-facing author–year rendering may be produced during publication, but source ids remain the canonical internal representation.
+Handle books, chapters, articles, proceedings, standards, reports, datasets, software documentation and web resources consistently. Deduplicate canonical DOI/URL/title records. Every in-text source ID resolves to bibliography.json; no invented aliases. A source's existence does not establish that it supports the claim.
 
-## Metadata policy
+## Gate
+Validate bibliography schema and citation cross-references, exact fragment provenance and numeric page support. Migrate legacy author-year syntax to stable IDs before the final gate. When the printed location is unavailable, retain a truthful source-level citation rather than guess a page.
 
-Format only observed and verified fields. Unknown author, publisher, year, issue, page extent, DOI or access date is `null` and omitted from the rendered citation. Never manufacture punctuation around missing data in a way that implies completeness.
-
-## Source classes
-
-Support books, chapters, journal articles, conference papers, standards, reports, datasets, software/documentation and web resources. Preserve original title language and identifiers. Record electronic access dates only when the source is genuinely accessed online and the date is known.
-
-## Consistency
-
-- one stable `source_id` per canonical source;
-- identical source metadata everywhere;
-- all in-text references resolve to `bibliography.json`;
-- no bibliography entry is cited by an invented alias;
-- quotations include verified location where available;
-- duplicate DOI/URL/title records are reconciled before formatting.
-
-## Verification
-
-Run schema and citation cross-reference validation. Page-specific references without page-aware evidence are blocking errors. Legacy `[Автор, год]` forms should be migrated to source ids before final publication.
+Apply .agents/references/integrity-contract.md and .agents/references/prompt-templates.md.
